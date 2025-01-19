@@ -1,3 +1,6 @@
 node_modules
 dist
 .parcel-cache
+.prettierrc
+apiTesting.js
+yahoo_fantasy_data_exports
