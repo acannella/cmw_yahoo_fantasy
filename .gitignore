@@ -4,3 +4,4 @@ dist
 .prettierrc
 apiTesting.js
 yahoo_fantasy_data_exports
+*.env
