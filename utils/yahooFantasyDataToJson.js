@@ -242,7 +242,7 @@ const matchupsToFile = async function (allTeamKeys) {
 };
 
 //Players get pulled in increments of 25. Will loop until all players are written to file
-const fantasyNFLPlayersToFile = async function (leagueKey) {
+const fantasyNflPlayersToFile = async function (leagueKey) {
   const playersArray = [];
   let allPlayersPulled = false;
   let startAt = 0;
@@ -280,10 +280,10 @@ const fantasyNFLPlayersToFile = async function (leagueKey) {
     startAt += 25;
   }
 
-  await writeJSONToFile('testPlayerResponse.json', nflPlayerLeagueRosterObject);
+  await writeJSONToFile('allPlayers.json', nflPlayerLeagueRosterObject);
 };
 
-fantasyNFLPlayersToFile(leagueKey);
+//fantasyNflPlayersToFile(leagueKey);
 // matchUpsToFile(allTeamKeys);
 // gameWeeksToFile(game_key);
 // leagueTeamsToFile(leagueKey);
