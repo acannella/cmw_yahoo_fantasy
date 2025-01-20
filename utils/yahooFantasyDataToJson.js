@@ -1,26 +1,31 @@
 const fs = require('fs');
 const YahooFantasy = require('yahoo-fantasy');
 const dotenv = require('dotenv');
+const path = require('path');
 
-dotenv.config({ path: './../config.env' });
+dotenv.config({ path: path.join(__dirname, '../config.env') });
 
 //This should be good for development, will probably need to be improved as the project evolves: store tokens in DB vs rewritting config file which seems sketchy long term
 const refreshAccessToken = async function (tokenData) {
-  fs.readFile('./../config.env', 'utf-8', (err, data) => {
+  fs.readFile(path.join(__dirname, '../config.env'), 'utf-8', (err, data) => {
     if (err) return console.log(err);
     configData = data.split('\r\n').filter((item) => {
       return !item.includes('YAHOO_ACCESS_TOKEN');
     });
     configData.push(`YAHOO_ACCESS_TOKEN=${tokenData.access_token}`);
-    fs.writeFile('./../config.env', configData.join('\r\n'), (err) => {
-      if (err) return console.log(err);
-    });
+    fs.writeFile(
+      path.join(__dirname, '../config.env'),
+      configData.join('\r\n'),
+      (err) => {
+        if (err) return console.log(err);
+      }
+    );
   });
 };
 
 const writeJSONToFile = async function (fileName, arrayToWrite) {
   fs.writeFile(
-    `./../yahoo_fantasy_data_exports/${fileName}`,
+    path.join(__dirname, `../yahoo_fantasy_data_exports/${fileName}`),
     JSON.stringify(arrayToWrite),
     (err) => {
       if (err) return console.log(err);
@@ -183,5 +188,69 @@ const transactionsToFile = async function (leagueKey) {
   }
 };
 
-//leagueTeamsToFile(leagueKey);
+const gameWeeksToFile = async function (game_key) {
+  try {
+    const game_weeks = await yf.game.game_weeks(game_key);
+    const gameData = [];
+    game_weeks.weeks.forEach((week) => {
+      const gameObj = {
+        week_number: week.week,
+        start: week.start,
+        end: week.end,
+      };
+      gameData.push(gameObj);
+    });
+    writeJSONToFile('weeks.json', gameData);
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+const matchupsToFile = async function (allTeamKeys) {
+  try {
+    const matchupsResponse = await yf.teams.fetch(allTeamKeys, 'matchups');
+    const matchupData = [];
+
+    matchupsResponse.forEach((yfMatchup) => {
+      const teamMatchups = [];
+      yfMatchup.matchups.forEach((aMatchup) => {
+        const matchupObject = {
+          week: aMatchup.week,
+          week_start: aMatchup.week_start,
+          week_end: aMatchup.week_end,
+          winner_team_key: aMatchup.winner_team_key,
+          winner_proj_points: aMatchup.teams[0].projected_points.total,
+          winner_points: aMatchup.teams[0].points.total,
+          loser_team_key: aMatchup.teams[1].team_key,
+          loser_proj_points: aMatchup.teams[1].projected_points.total,
+          loser_points: aMatchup.teams[1].points.total,
+        };
+        teamMatchups.push(matchupObject);
+      });
+      const fullMatchupObject = {
+        team_key: yfMatchup.team_key,
+        team_id: yfMatchup.team_id,
+        name: yfMatchup.name,
+        matchups: teamMatchups,
+      };
+      matchupData.push(fullMatchupObject);
+    });
+    writeJSONToFile('matchups.json', matchupData);
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+/*
+TODO: finish get player function: might have to use filters or iteration to get the entire list
+*/
+const fantasyNFLPlayersToFile = async function (leagueKey) {
+  const data = await yf.players.leagues(leagueKey);
+  writeJSONToFile('testPlayerResponse.json', data);
+};
+
+fantasyNFLPlayersToFile(leagueKey);
+// matchUpsToFile(allTeamKeys);
+// gameWeeksToFile(game_key);
+// leagueTeamsToFile(leagueKey);
 // transactionsToFile(leagueKey);
