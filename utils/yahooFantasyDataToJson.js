@@ -23,10 +23,13 @@ const refreshAccessToken = async function (tokenData) {
   });
 };
 
-const writeJSONToFile = async function (fileName, arrayToWrite) {
+const writeJSONToFile = async function (fileName, dataToWrite) {
   fs.writeFile(
-    path.join(__dirname, `../yahoo_fantasy_data_exports/${fileName}`),
-    JSON.stringify(arrayToWrite),
+    path.join(
+      __dirname,
+      `../yahoo_fantasy_data_exports/yahoo_api_exports/${fileName}`
+    ),
+    JSON.stringify(dataToWrite),
     (err) => {
       if (err) return console.log(err);
     }
@@ -266,6 +269,7 @@ const fantasyNflPlayersToFile = async function (leagueKey) {
       nflPlayerLeagueRosterObject.end_date = yfPlayerResponse.end_date;
       nflPlayerLeagueRosterObject.season = yfPlayerResponse.season;
       allPlayersPulled = true;
+      continue;
     }
     yfPlayerResponse.players.forEach((player) => {
       const playerObject = {
