@@ -200,7 +200,7 @@ const gameWeeksToFile = async function (game_key) {
       };
       gameData.push(gameObj);
     });
-    writeJSONToFile('weeks.json', gameData);
+    await writeJSONToFile('weeks.json', gameData);
   } catch (err) {
     return console.log(err);
   }
@@ -235,18 +235,52 @@ const matchupsToFile = async function (allTeamKeys) {
       };
       matchupData.push(fullMatchupObject);
     });
-    writeJSONToFile('matchups.json', matchupData);
+    await writeJSONToFile('matchups.json', matchupData);
   } catch (err) {
     return console.log(err);
   }
 };
 
-/*
-TODO: finish get player function: might have to use filters or iteration to get the entire list
-*/
+//Players get pulled in increments of 25. Will loop until all players are written to file
 const fantasyNFLPlayersToFile = async function (leagueKey) {
-  const data = await yf.players.leagues(leagueKey);
-  writeJSONToFile('testPlayerResponse.json', data);
+  const playersArray = [];
+  let allPlayersPulled = false;
+  let startAt = 0;
+  const nflPlayerLeagueRosterObject = {
+    league_key: '',
+    league_id: '',
+    start_date: '',
+    end_date: '',
+    season: '',
+    players: playersArray,
+  };
+
+  while (!allPlayersPulled) {
+    const yfPlayerResponse = (
+      await yf.players.leagues(leagueKey, { start: startAt })
+    )[0]; //Json is in the first array index since it came from the collection
+    if (yfPlayerResponse.players.length === 0) {
+      nflPlayerLeagueRosterObject.league_key = yfPlayerResponse.league_key;
+      nflPlayerLeagueRosterObject.league_id = yfPlayerResponse.league_id;
+      nflPlayerLeagueRosterObject.start_date = yfPlayerResponse.start_date;
+      nflPlayerLeagueRosterObject.end_date = yfPlayerResponse.end_date;
+      nflPlayerLeagueRosterObject.season = yfPlayerResponse.season;
+      allPlayersPulled = true;
+    }
+    yfPlayerResponse.players.forEach((player) => {
+      const playerObject = {
+        player_key: player.player_key,
+        player_id: player.player_id,
+        full_name: player.name.full,
+        nfl_team_name: player.editorial_team_full_name,
+        position: player.display_position,
+      };
+      playersArray.push(playerObject);
+    });
+    startAt += 25;
+  }
+
+  await writeJSONToFile('testPlayerResponse.json', nflPlayerLeagueRosterObject);
 };
 
 fantasyNFLPlayersToFile(leagueKey);
