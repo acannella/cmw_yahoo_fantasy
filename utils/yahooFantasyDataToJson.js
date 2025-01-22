@@ -1,57 +1,64 @@
 const fs = require('fs');
 const YahooFantasy = require('yahoo-fantasy');
-const dotenv = require('dotenv');
 const path = require('path');
+const { PrismaClient } = require('@prisma/client');
 
-dotenv.config({ path: path.join(__dirname, '../config.env') });
+const refreshAccessToken = require('./refreshAccessToken.js');
 
-//This should be good for development, will probably need to be improved as the project evolves: store tokens in DB vs rewritting config file which seems sketchy long term
-const refreshAccessToken = async function (tokenData) {
-  fs.readFile(path.join(__dirname, '../config.env'), 'utf-8', (err, data) => {
-    if (err) return console.log(err);
-    configData = data.split('\r\n').filter((item) => {
-      return !item.includes('YAHOO_ACCESS_TOKEN');
-    });
-    configData.push(`YAHOO_ACCESS_TOKEN=${tokenData.access_token}`);
-    fs.writeFile(
-      path.join(__dirname, '../config.env'),
-      configData.join('\r\n'),
-      (err) => {
-        if (err) return console.log(err);
-      }
-    );
-  });
+const initYahooFantasy = async function () {
+  const prisma = new PrismaClient();
+
+  const yahooConsumerKey = (
+    await prisma.config.findFirst({
+      where: { key: 'YAHOO_CONSUMER_KEY' },
+    })
+  ).value;
+
+  const yahooConsumerSecret = (
+    await prisma.config.findFirst({
+      where: { key: 'YAHOO_CONSUMER_SECRET' },
+    })
+  ).value;
+
+  const yahooRefreshToken = (
+    await prisma.config.findFirst({
+      where: { key: 'YAHOO_REFRESH_TOKEN' },
+    })
+  ).value;
+
+  const yahooAccessToken = (
+    await prisma.config.findFirst({
+      where: { key: 'YAHOO_ACCESS_TOKEN' },
+    })
+  ).value;
+
+  //Per yahoo's api, use oob when there isn't a redirect uri
+  const redirectURI = 'oob';
+
+  const yf = new YahooFantasy(
+    yahooConsumerKey,
+    yahooConsumerSecret,
+    refreshAccessToken,
+    redirectURI
+  );
+
+  yf.setRefreshToken(yahooRefreshToken);
+  yf.setUserToken(yahooAccessToken);
+
+  return yf;
 };
 
 const writeJSONToFile = async function (fileName, dataToWrite) {
-  fs.writeFile(
-    path.join(
-      __dirname,
-      `../yahoo_fantasy_data_exports/yahoo_api_exports/${fileName}`
-    ),
-    JSON.stringify(dataToWrite),
-    (err) => {
-      if (err) return console.log(err);
-    }
+  const writePath = path.join(
+    __dirname,
+    `../yahoo_fantasy_data_exports/yahoo_api_exports/${fileName}`
   );
+  fs.writeFile(writePath, JSON.stringify(dataToWrite), (err) => {
+    if (err) return console.log(err);
+  });
 };
 
-const yf = new YahooFantasy(
-  process.env.YAHOO_CONSUMER_KEY,
-  process.env.YAHOO_CONSUMER_SECRET,
-  refreshAccessToken,
-  'oob'
-);
-
-yf.setRefreshToken(process.env.YAHOO_REFRESH_TOKEN);
-yf.setUserToken(process.env.YAHOO_ACCESS_TOKEN);
-
-const game_key = '449';
-const league_num = '224437';
-const leagueKey = `${game_key}.l.${league_num}`;
-const teamKey = '449.l.224437.t.3';
-
-const leagueTeamsToFile = async function (leagueKey) {
+const leagueTeamsToFile = async function (yf, leagueKey) {
   try {
     const leagueTeams = await yf.league.teams(leagueKey);
     const leageTeamArray = [];
@@ -72,22 +79,7 @@ const leagueTeamsToFile = async function (leagueKey) {
   }
 };
 
-const allTeamKeys = [
-  '449.l.224437.t.1',
-  '449.l.224437.t.2',
-  '449.l.224437.t.3',
-  '449.l.224437.t.4',
-  '449.l.224437.t.5',
-  '449.l.224437.t.6',
-  '449.l.224437.t.7',
-  '449.l.224437.t.8',
-  '449.l.224437.t.9',
-  '449.l.224437.t.10',
-  '449.l.224437.t.11',
-  '449.l.224437.t.12',
-];
-
-const teamRostersToFile = async function (teamKeys) {
+const teamRostersToFile = async function (yf, teamKeys) {
   const prunedRosterData = [];
   try {
     for (const teamKey of teamKeys) {
@@ -121,7 +113,7 @@ const teamRostersToFile = async function (teamKeys) {
   }
 };
 
-const leagueStandingsToFile = async function (leagueKey) {
+const leagueStandingsToFile = async function (yf, leagueKey) {
   const leagueStandingsData = [];
   try {
     const leagueStandingsResponse = await yf.league.standings(leagueKey);
@@ -141,7 +133,7 @@ const leagueStandingsToFile = async function (leagueKey) {
   }
 };
 
-const transactionsToFile = async function (leagueKey) {
+const transactionsToFile = async function (yf, leagueKey) {
   try {
     const transactionsResponse = await yf.league.transactions(leagueKey);
     const prunedTransactions = [];
@@ -191,7 +183,7 @@ const transactionsToFile = async function (leagueKey) {
   }
 };
 
-const gameWeeksToFile = async function (game_key) {
+const gameWeeksToFile = async function (yf, game_key) {
   try {
     const game_weeks = await yf.game.game_weeks(game_key);
     const gameData = [];
@@ -209,7 +201,7 @@ const gameWeeksToFile = async function (game_key) {
   }
 };
 
-const matchupsToFile = async function (allTeamKeys) {
+const matchupsToFile = async function (yf, allTeamKeys) {
   try {
     const matchupsResponse = await yf.teams.fetch(allTeamKeys, 'matchups');
     const matchupData = [];
@@ -245,7 +237,7 @@ const matchupsToFile = async function (allTeamKeys) {
 };
 
 //Players get pulled in increments of 25. Will loop until all players are written to file
-const fantasyNflPlayersToFile = async function (leagueKey) {
+const fantasyNflPlayersToFile = async function (yf, leagueKey) {
   const playersArray = [];
   let allPlayersPulled = false;
   let startAt = 0;
@@ -287,8 +279,32 @@ const fantasyNflPlayersToFile = async function (leagueKey) {
   await writeJSONToFile('allPlayers.json', nflPlayerLeagueRosterObject);
 };
 
-//fantasyNflPlayersToFile(leagueKey);
-// matchUpsToFile(allTeamKeys);
-// gameWeeksToFile(game_key);
-// leagueTeamsToFile(leagueKey);
-// transactionsToFile(leagueKey);
+const main = async function () {
+  const allTeamKeys = [
+    '449.l.224437.t.1',
+    '449.l.224437.t.2',
+    '449.l.224437.t.3',
+    '449.l.224437.t.4',
+    '449.l.224437.t.5',
+    '449.l.224437.t.6',
+    '449.l.224437.t.7',
+    '449.l.224437.t.8',
+    '449.l.224437.t.9',
+    '449.l.224437.t.10',
+    '449.l.224437.t.11',
+    '449.l.224437.t.12',
+  ];
+  const game_key = '449';
+  const league_num = '224437';
+  const leagueKey = `${game_key}.l.${league_num}`;
+  const teamKey = '449.l.224437.t.3';
+  yf = await initYahooFantasy();
+
+  // await fantasyNflPlayersToFile(yf, leagueKey);
+  // await matchupsToFile(yf, allTeamKeys);
+  // await gameWeeksToFile(yf, game_key);
+  // await leagueTeamsToFile(yf, leagueKey);
+  // await transactionsToFile(yf, leagueKey);
+};
+
+main();
