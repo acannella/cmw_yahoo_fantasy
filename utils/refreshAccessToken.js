@@ -7,9 +7,9 @@ const refreshAccessToken = async function (tokenData) {
     await prisma.config.findFirst({
       where: { key: 'YAHOO_ACCESS_TOKEN' },
     })
-  ).config_id;
+  ).id;
   await prisma.config.update({
-    where: { config_id: accessTokenDbId },
+    where: { id: accessTokenDbId },
     data: { value: tokenData.access_token },
   });
 };
