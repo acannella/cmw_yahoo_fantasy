@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model config {
+  key       String? @db.VarChar
+  value     String? @db.VarChar
+  config_id Int     @id(map: "config_pk") @default(autoincrement())
+}
+
+model fantasy_teams {
+  id               Int    @id(map: "fantasy_teams_pk") @default(autoincrement())
+  fantasy_team_key String @db.VarChar
+  fantasy_team_id  String @db.VarChar
+  name             String @db.VarChar
+  waiver_priority  String @db.VarChar
+}
+
+model fantasy_weeks {
+  id               Int    @id(map: "fantasy_weeks_pk") @default(autoincrement())
+  week_number String @db.VarChar
+  start  String @db.VarChar
+  end             String @db.VarChar
+}
