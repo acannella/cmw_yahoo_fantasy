@@ -209,16 +209,20 @@ const matchupsToFile = async function (yf, allTeamKeys) {
     matchupsResponse.forEach((yfMatchup) => {
       const teamMatchups = [];
       yfMatchup.matchups.forEach((aMatchup) => {
+        const winnerIndex =
+          aMatchup.winner_team_key === yfMatchup.team_key ? 0 : 1;
+        const loserIndex = winnerIndex === 0 ? 1 : 0;
         const matchupObject = {
           week: aMatchup.week,
           week_start: aMatchup.week_start,
           week_end: aMatchup.week_end,
           winner_team_key: aMatchup.winner_team_key,
-          winner_proj_points: aMatchup.teams[0].projected_points.total,
-          winner_points: aMatchup.teams[0].points.total,
-          loser_team_key: aMatchup.teams[1].team_key,
-          loser_proj_points: aMatchup.teams[1].projected_points.total,
-          loser_points: aMatchup.teams[1].points.total,
+          winner_proj_points:
+            aMatchup.teams[winnerIndex].projected_points.total,
+          winner_points: aMatchup.teams[winnerIndex].points.total,
+          loser_team_key: aMatchup.teams[loserIndex].team_key,
+          loser_proj_points: aMatchup.teams[loserIndex].projected_points.total,
+          loser_points: aMatchup.teams[loserIndex].points.total,
         };
         teamMatchups.push(matchupObject);
       });
@@ -301,7 +305,7 @@ const main = async function () {
   yf = await initYahooFantasy();
 
   // await fantasyNflPlayersToFile(yf, leagueKey);
-  // await matchupsToFile(yf, allTeamKeys);
+  await matchupsToFile(yf, allTeamKeys);
   // await gameWeeksToFile(yf, game_key);
   // await leagueTeamsToFile(yf, leagueKey);
   // await transactionsToFile(yf, leagueKey);
