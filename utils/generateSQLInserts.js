@@ -38,5 +38,28 @@ const generateFantasyTeamsInsertStatements = function () {
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
 
+const generateFantasyStandingsInsertStatements = function () {
+  const readFile = `${pathToJSON}leagueStandings.json`;
+  const writeFile = `${pathToWrite}leagueStandingsData.sql`;
+  const statements = [];
+  const standingsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
+  standingsData.forEach((standingObject) => {
+    const wins = +standingObject.standings.outcome_totals.wins;
+    const losses = +standingObject.standings.outcome_totals.wins;
+    const ties = +standingObject.standings.outcome_totals.wins;
+    const rank = +standingObject.standings.rank;
+    const playOffSeed = +standingObject.standings.playoff_seed;
+    const pointsAgainst =
+      Math.round(+standingObject.standings.points_against * 100) / 100;
+    const pointsFor =
+      Math.round(+standingObject.standings.points_for * 100) / 100;
+    const statement = `insert into league_standings(league_key,team_key,wins,losses,ties,rank,playoff_seed,points_for,points_against) values('${standingObject.league_key}','${standingObject.team_key}',${wins},${losses},${ties},${rank},${playOffSeed},${pointsFor},${pointsAgainst});`;
+    statements.push(statement);
+  });
+
+  fs.writeFileSync(writeFile, statements.join('\r\n'));
+};
+
 // generateFantasyWeeksInsertStatements();
-generateFantasyTeamsInsertStatements();
+// generateFantasyTeamsInsertStatements();
+// generateFantasyStandingsInsertStatements();
