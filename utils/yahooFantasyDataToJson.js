@@ -269,6 +269,7 @@ const fantasyNflPlayersToFile = async function (yf, leagueKey) {
         player_id: player.player_id,
         player_name: player.name.full,
         nfl_team_name: player.editorial_team_full_name,
+        uniform_number: player.uniform_number,
         display_position: player.display_position,
         is_undroppable: player.is_undroppable,
         eligible_positions: player.eligible_positions,
