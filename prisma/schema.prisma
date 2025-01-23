@@ -27,8 +27,8 @@ model fantasy_teams {
 
 model fantasy_weeks {
   id              Int             @id(map: "fantasy_weeks_pk") @default(autoincrement())
-  start           String          @db.VarChar
-  end             String          @db.VarChar
+  week_start      String          @db.VarChar
+  week_end        String          @db.VarChar
   league_key      String          @db.VarChar
   week_number     Int             @db.Integer
   league_metadata league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "fantasy_weeks_league_metadata_fk")
