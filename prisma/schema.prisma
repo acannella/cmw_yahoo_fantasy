@@ -69,11 +69,11 @@ model matchups {
   team_key           String          @db.VarChar
   week               Int             @db.Integer
   winner_team_key    String          @db.VarChar
-  winner_proj_points Int             @db.Integer
-  winner_points      Int             @db.Integer
+  winner_proj_points Decimal         @db.Decimal(6, 2)
+  winner_points      Decimal         @db.Decimal(6, 2)
   loser_team_key     String          @db.VarChar
-  loser_proj_points  Int             @db.Integer
-  loser_points       Int             @db.Integer
+  loser_proj_points  Decimal         @db.Decimal(6, 2)
+  loser_points       Decimal         @db.Decimal(6, 2)
   league_metadata    league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "matchups_league_metadata_fk")
 }
 
