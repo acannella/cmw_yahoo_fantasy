@@ -65,6 +65,7 @@ const leagueTeamsToFile = async function (yf, leagueKey) {
 
     leagueTeams.teams.forEach((team) => {
       const teamObject = {
+        league_key: leagueKey,
         team_key: team.team_key,
         team_id: team.team_id,
         name: team.name,
@@ -184,15 +185,17 @@ const transactionsToFile = async function (yf, leagueKey) {
   }
 };
 
-const gameWeeksToFile = async function (yf, game_key) {
+const gameWeeksToFile = async function (yf, leagueKey) {
   try {
-    const game_weeks = await yf.game.game_weeks(game_key);
+    const gameKey = leagueKey.split('.')[0];
+    const game_weeks = await yf.game.game_weeks(gameKey);
     const gameData = [];
     game_weeks.weeks.forEach((week) => {
       const gameObj = {
+        league_key: leagueKey,
         week_number: week.week,
-        start: week.start,
-        end: week.end,
+        week_start: week.start,
+        week_end: week.end,
       };
       gameData.push(gameObj);
     });
@@ -307,8 +310,8 @@ const main = async function () {
 
   // await fantasyNflPlayersToFile(yf, leagueKey);
   // await matchupsToFile(yf, allTeamKeys);
-  // await gameWeeksToFile(yf, game_key);
-  // await leagueTeamsToFile(yf, leagueKey);
+  // await gameWeeksToFile(yf, leagueKey);
+  await leagueTeamsToFile(yf, leagueKey);
   // await transactionsToFile(yf, leagueKey);
   // await leagueStandingsToFile(yf, leagueKey);
 };
