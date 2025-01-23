@@ -61,13 +61,30 @@ const generateFantasyStandingsInsertStatements = function () {
 };
 
 const generateFantasyMatchupsInsertStatements = function () {
-  const readFile = `${pathToJSON}weeks.json`;
-  const writeFile = `${pathToWrite}insertWeeksData.sql`;
+  const readFile = `${pathToJSON}matchups.json`;
+  const writeFile = `${pathToWrite}insertMatchupsData.sql`;
   const statements = [];
   const matchupsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
-  matchupsData.forEach((matchupObject) => {
-    const statement = `insert into fantasy_weeks(week_start,week_end,league_key,week_number) values('${weekObject.week_start}','${weekObject.week_end}','${weekObject.league_key}',${weekObject.week_number});`;
-    statements.push(statement);
+  matchupsData.forEach((teamMatchupsObject) => {
+    teamMatchupsObject.matchups.forEach((matchup) => {
+      const teamKey = teamMatchupsObject.team_key;
+      //slice the .t.teamId off teamKey to get leagueKey
+      const leagueKey = teamKey.slice(
+        0,
+        -(teamKey.length - (teamKey.indexOf('t') - 1))
+      );
+      const week = +matchup.week;
+      const winnerTeamKey = matchup.winner_team_key;
+      const loserTeamKey = matchup.loser_team_key;
+      const winnerProjPoints =
+        Math.round(+matchup.winner_proj_points * 100) / 100;
+      const winnerPoints = Math.round(+matchup.winner_points * 100) / 100;
+      const loserProjPoints =
+        Math.round(+matchup.loser_proj_points * 100) / 100;
+      const loserPoints = Math.round(+matchup.loser_points * 100) / 100;
+      const statement = `insert into matchups(league_key,week,winner_team_key,winner_proj_points,winner_points,loser_team_key,loser_proj_points,loser_points,team_key) values('${leagueKey}',${week},'${winnerTeamKey}',${winnerProjPoints},${winnerPoints},'${loserTeamKey}',${loserProjPoints},${loserPoints},'${teamKey}');`;
+      statements.push(statement);
+    });
   });
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
@@ -75,3 +92,4 @@ const generateFantasyMatchupsInsertStatements = function () {
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
 // generateFantasyStandingsInsertStatements();
+// generateFantasyMatchupsInsertStatements();
