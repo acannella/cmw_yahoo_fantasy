@@ -119,6 +119,7 @@ const leagueStandingsToFile = async function (yf, leagueKey) {
     const leagueStandingsResponse = await yf.league.standings(leagueKey);
     leagueStandingsResponse.standings.forEach((team) => {
       const leagueStandingsObject = {
+        league_key: leagueStandingsResponse.league_key,
         team_key: team.team_key,
         team_id: team.team_id,
         team_name: team.name,
@@ -305,10 +306,11 @@ const main = async function () {
   yf = await initYahooFantasy();
 
   // await fantasyNflPlayersToFile(yf, leagueKey);
-  await matchupsToFile(yf, allTeamKeys);
+  // await matchupsToFile(yf, allTeamKeys);
   // await gameWeeksToFile(yf, game_key);
   // await leagueTeamsToFile(yf, leagueKey);
   // await transactionsToFile(yf, leagueKey);
+  // await leagueStandingsToFile(yf, leagueKey);
 };
 
 main();
