@@ -251,10 +251,6 @@ const fantasyNflPlayersToFile = async function (yf, leagueKey) {
   let startAt = 0;
   const nflPlayerLeagueRosterObject = {
     league_key: '',
-    league_id: '',
-    start_date: '',
-    end_date: '',
-    season: '',
     players: playersArray,
   };
 
@@ -264,10 +260,6 @@ const fantasyNflPlayersToFile = async function (yf, leagueKey) {
     )[0]; //Json is in the first array index since it came from the collection
     if (yfPlayerResponse.players.length === 0) {
       nflPlayerLeagueRosterObject.league_key = yfPlayerResponse.league_key;
-      nflPlayerLeagueRosterObject.league_id = yfPlayerResponse.league_id;
-      nflPlayerLeagueRosterObject.start_date = yfPlayerResponse.start_date;
-      nflPlayerLeagueRosterObject.end_date = yfPlayerResponse.end_date;
-      nflPlayerLeagueRosterObject.season = yfPlayerResponse.season;
       allPlayersPulled = true;
       continue;
     }
@@ -275,9 +267,11 @@ const fantasyNflPlayersToFile = async function (yf, leagueKey) {
       const playerObject = {
         player_key: player.player_key,
         player_id: player.player_id,
-        full_name: player.name.full,
+        player_name: player.name.full,
         nfl_team_name: player.editorial_team_full_name,
-        position: player.display_position,
+        display_position: player.display_position,
+        is_undroppable: player.is_undroppable,
+        eligible_positions: player.eligible_positions,
       };
       playersArray.push(playerObject);
     });
@@ -308,12 +302,14 @@ const main = async function () {
   const teamKey = '449.l.224437.t.3';
   yf = await initYahooFantasy();
 
-  // await fantasyNflPlayersToFile(yf, leagueKey);
+  await fantasyNflPlayersToFile(yf, leagueKey);
   // await matchupsToFile(yf, allTeamKeys);
   // await gameWeeksToFile(yf, leagueKey);
-  await leagueTeamsToFile(yf, leagueKey);
+  // await leagueTeamsToFile(yf, leagueKey);
   // await transactionsToFile(yf, leagueKey);
   // await leagueStandingsToFile(yf, leagueKey);
 };
 
-main();
+main().then((res) => {
+  console.log(res);
+});
