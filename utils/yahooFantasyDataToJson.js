@@ -310,6 +310,4 @@ const main = async function () {
   // await leagueStandingsToFile(yf, leagueKey);
 };
 
-main().then((res) => {
-  console.log(res);
-});
+main();
