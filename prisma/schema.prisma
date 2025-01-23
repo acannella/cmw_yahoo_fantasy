@@ -66,6 +66,7 @@ model nfl_players {
 model matchups {
   id                 Int             @id(map: "matchups_pk") @default(autoincrement())
   league_key         String          @db.VarChar
+  team_key           String          @db.VarChar
   week               Int             @db.Integer
   winner_team_key    String          @db.VarChar
   winner_proj_points Int             @db.Integer

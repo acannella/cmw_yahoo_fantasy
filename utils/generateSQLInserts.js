@@ -60,6 +60,18 @@ const generateFantasyStandingsInsertStatements = function () {
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
 
+const generateFantasyMatchupsInsertStatements = function () {
+  const readFile = `${pathToJSON}weeks.json`;
+  const writeFile = `${pathToWrite}insertWeeksData.sql`;
+  const statements = [];
+  const matchupsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
+  matchupsData.forEach((matchupObject) => {
+    const statement = `insert into fantasy_weeks(week_start,week_end,league_key,week_number) values('${weekObject.week_start}','${weekObject.week_end}','${weekObject.league_key}',${weekObject.week_number});`;
+    statements.push(statement);
+  });
+  fs.writeFileSync(writeFile, statements.join('\r\n'));
+};
+
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
 // generateFantasyStandingsInsertStatements();
