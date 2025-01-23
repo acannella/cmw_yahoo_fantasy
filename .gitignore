@@ -5,4 +5,4 @@ dist
 apiTesting.js
 yahoo_fantasy_data_exports
 *.env
-db_scripts/insertConfigData.sql
+db_scripts/insert_scripts/*.sql
