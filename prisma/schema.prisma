@@ -53,7 +53,7 @@ model nfl_players {
   id                 Int             @id(map: "nfl_players_pk") @default(autoincrement())
   player_key         String          @db.VarChar
   league_key         String          @db.VarChar
-  team_key           String          @db.VarChar
+  team_key           String          @default("FA") @db.VarChar
   player_name        String          @db.VarChar
   nfl_team_name      String          @db.VarChar
   uniform_number     Int             @db.Integer
