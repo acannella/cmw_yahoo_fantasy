@@ -40,7 +40,7 @@ const generateFantasyTeamsInsertStatements = function () {
 
 const generateFantasyStandingsInsertStatements = function () {
   const readFile = `${pathToJSON}leagueStandings.json`;
-  const writeFile = `${pathToWrite}leagueStandingsData.sql`;
+  const writeFile = `${pathToWrite}insertLeagueStandingsData.sql`;
   const statements = [];
   const standingsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
   standingsData.forEach((standingObject) => {
@@ -89,7 +89,30 @@ const generateFantasyMatchupsInsertStatements = function () {
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
 
+const generateNflPlayersInsertStatements = function () {
+  const readFile = `${pathToJSON}allPlayers.json`;
+  const writeFile = `${pathToWrite}insertNflPlayersData.sql`;
+  const statements = [];
+  const nflPlayersData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
+  nflPlayersData.players.forEach((nflPlayerObject) => {
+    const leagueKey = nflPlayersData.league_key;
+    const playerKey = nflPlayerObject.player_key;
+    const playerID = +nflPlayerObject.player_id;
+    const playerName = nflPlayerObject.player_name.replaceAll(`'`, `''`);
+    const nflTeamName = nflPlayerObject.nfl_team_name;
+    const uniformNumber = +nflPlayerObject.uniform_number;
+    const displayPosition = nflPlayerObject.display_position;
+    const isUndroppable = nflPlayerObject.is_undroppable === '0' ? false : true;
+    const eligiblePositions = nflPlayerObject.eligible_positions;
+    const statement = `insert into nfl_players (player_key,league_key,player_name,nfl_team_name,uniform_number,display_position,is_undroppable,eligible_positions,player_id)
+	values ('${playerKey}','${leagueKey}','${playerName}','${nflTeamName}',${uniformNumber},'${displayPosition}',${isUndroppable},'{${eligiblePositions}}',${playerID});`;
+    statements.push(statement);
+  });
+  fs.writeFileSync(writeFile, statements.join('\r\n'));
+};
+
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
 // generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
+// generateNflPlayersInsertStatements();
