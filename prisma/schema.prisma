@@ -8,22 +8,85 @@ datasource db {
 }
 
 model config {
-  key       String? @db.VarChar
-  value     String? @db.VarChar
-  config_id Int     @id(map: "config_pk") @default(autoincrement())
+  key   String @db.VarChar
+  value String @db.VarChar
+  id    Int    @id(map: "config_pk") @default(autoincrement())
 }
 
 model fantasy_teams {
-  id               Int    @id(map: "fantasy_teams_pk") @default(autoincrement())
-  fantasy_team_key String @db.VarChar
-  fantasy_team_id  String @db.VarChar
-  name             String @db.VarChar
-  waiver_priority  String @db.VarChar
+  id               Int                @id(map: "fantasy_teams_pk") @default(autoincrement())
+  fantasy_team_key String             @unique(map: "fantasy_team_key_unique") @db.VarChar
+  name             String             @db.VarChar
+  league_key       String             @db.VarChar
+  yahoo_fantasy_id Int                @db.Integer
+  waiver_priority  Int                @db.Integer
+  league_metadata  league_metadata    @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "fantasy_teams_league_metadata_fk")
+  nfl_players      nfl_players[]
+  league_standings league_standings[]
 }
 
 model fantasy_weeks {
-  id               Int    @id(map: "fantasy_weeks_pk") @default(autoincrement())
-  week_number String @db.VarChar
-  start  String @db.VarChar
-  end             String @db.VarChar
+  id              Int             @id(map: "fantasy_weeks_pk") @default(autoincrement())
+  start           String          @db.VarChar
+  end             String          @db.VarChar
+  league_key      String          @db.VarChar
+  week_number     Int             @db.Integer
+  league_metadata league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "fantasy_weeks_league_metadata_fk")
+}
+
+model league_metadata {
+  id               Int                @id(map: "league_metadata_pk") @default(autoincrement())
+  league_key       String             @unique(map: "league_metadata_league_key_unique") @db.VarChar
+  league_name      String             @db.VarChar
+  league_id        Int                @db.Integer
+  game_key         Int                @db.Integer
+  fantasy_weeks    fantasy_weeks[]
+  fantasy_teams    fantasy_teams[]
+  matchups         matchups[]
+  nfl_players      nfl_players[]
+  league_standings league_standings[]
+}
+
+model nfl_players {
+  id                 Int             @id(map: "nfl_players_pk") @default(autoincrement())
+  player_key         String          @db.VarChar
+  league_key         String          @db.VarChar
+  team_key           String          @db.VarChar
+  player_name        String          @db.VarChar
+  nfl_team_name      String          @db.VarChar
+  uniform_number     Int             @db.Integer
+  display_position   String          @db.VarChar
+  is_undroppable     Boolean         @db.Boolean
+  eligible_positions String[]        @db.VarChar
+  player_id          Int             @db.Integer
+  league_metadata    league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "fantasy_weeks_league_metadata_fk")
+  fantasy_teams      fantasy_teams   @relation(fields: [team_key], references: [fantasy_team_key], onDelete: Restrict, onUpdate: Restrict, map: "nfl_players_fantasy_team_fk")
+}
+
+model matchups {
+  id                 Int             @id(map: "matchups_pk") @default(autoincrement())
+  league_key         String          @db.VarChar
+  week               Int             @db.Integer
+  winner_team_key    String          @db.VarChar
+  winner_proj_points Int             @db.Integer
+  winner_points      Int             @db.Integer
+  loser_team_key     String          @db.VarChar
+  loser_proj_points  Int             @db.Integer
+  loser_points       Int             @db.Integer
+  league_metadata    league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "matchups_league_metadata_fk")
+}
+
+model league_standings {
+  id              Int             @id(map: "league_standings_pk") @default(autoincrement())
+  league_key      String          @db.VarChar
+  team_key        String          @db.VarChar
+  wins            Int             @db.Integer
+  losses          Int             @db.Integer
+  ties            Int             @db.Integer
+  rank            Int             @db.Integer
+  playoff_seed    Int             @db.Integer
+  points_for      Decimal         @db.Decimal(6, 2)
+  points_against  Decimal         @db.Decimal(6, 2)
+  league_metadata league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_league_metadata_fk")
+  fantasy_teams   fantasy_teams   @relation(fields: [team_key], references: [fantasy_team_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_fantasy_team_fk")
 }
