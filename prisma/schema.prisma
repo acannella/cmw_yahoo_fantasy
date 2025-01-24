@@ -47,6 +47,7 @@ model league_metadata {
   matchups         matchups[]
   nfl_players      nfl_players[]
   league_standings league_standings[]
+  transactions     transactions[]
 }
 
 model nfl_players {
@@ -92,4 +93,14 @@ model league_standings {
   points_against  Decimal         @db.Decimal(6, 2)
   league_metadata league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_league_metadata_fk")
   fantasy_teams   fantasy_teams   @relation(fields: [team_key], references: [fantasy_team_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_fantasy_team_fk")
+}
+
+model transactions {
+  id                     Int             @id(map: "transactions_pk") @default(autoincrement())
+  transaction_key        String          @db.VarChar
+  league_key             String          @db.VarChar
+  type                   String          @db.VarChar
+  timestamp              Int             @db.Integer
+  players_in_transaction Json            @db.Json
+  league_metadata        league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "transactions_league_metadata_fk")
 }
