@@ -1,52 +1,7 @@
 const fs = require('fs');
-const YahooFantasy = require('yahoo-fantasy');
 const path = require('path');
-const { PrismaClient } = require('@prisma/client');
 
-const refreshAccessToken = require('./refreshAccessToken.js');
-
-const initYahooFantasy = async function () {
-  const prisma = new PrismaClient();
-
-  const yahooConsumerKey = (
-    await prisma.config.findFirst({
-      where: { key: 'YAHOO_CONSUMER_KEY' },
-    })
-  ).value;
-
-  const yahooConsumerSecret = (
-    await prisma.config.findFirst({
-      where: { key: 'YAHOO_CONSUMER_SECRET' },
-    })
-  ).value;
-
-  const yahooRefreshToken = (
-    await prisma.config.findFirst({
-      where: { key: 'YAHOO_REFRESH_TOKEN' },
-    })
-  ).value;
-
-  const yahooAccessToken = (
-    await prisma.config.findFirst({
-      where: { key: 'YAHOO_ACCESS_TOKEN' },
-    })
-  ).value;
-
-  //Per yahoo's api, use oob when there isn't a redirect uri
-  const redirectURI = 'oob';
-
-  const yf = new YahooFantasy(
-    yahooConsumerKey,
-    yahooConsumerSecret,
-    refreshAccessToken,
-    redirectURI
-  );
-
-  yf.setRefreshToken(yahooRefreshToken);
-  yf.setUserToken(yahooAccessToken);
-
-  return yf;
-};
+const initYahooFantasy = require('./initYahooFantasy');
 
 const writeJSONToFile = async function (fileName, dataToWrite) {
   const writePath = path.join(
@@ -301,9 +256,9 @@ const main = async function () {
   const league_num = '224437';
   const leagueKey = `${game_key}.l.${league_num}`;
   const teamKey = '449.l.224437.t.3';
-  yf = await initYahooFantasy();
+  const yf = await initYahooFantasy();
 
-  await fantasyNflPlayersToFile(yf, leagueKey);
+  // await fantasyNflPlayersToFile(yf, leagueKey);
   // await matchupsToFile(yf, allTeamKeys);
   // await gameWeeksToFile(yf, leagueKey);
   // await leagueTeamsToFile(yf, leagueKey);
