@@ -111,8 +111,49 @@ const generateNflPlayersInsertStatements = function () {
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
 
+const generateTransactionsInsertStatements = function () {
+  const readFile = `${pathToJSON}allTransactions.json`;
+  const writeFile = `${pathToWrite}insertTransactionsData.sql`;
+  const statements = [];
+  const transactionsData = JSON.parse(fs.readFileSync(readFile, 'utf8'))[0];
+  transactionsData.league_transactions.forEach((transactionObject) => {
+    const playersInTransaction = [];
+    const leagueKey = transactionsData.league_key;
+    const transactionKey = transactionObject.transaction_key;
+    const type = transactionObject.type;
+    const timestamp = +transactionObject.timestamp;
+    transactionObject.players_in_transaction.forEach((player) => {
+      const playerKey = player.player_key;
+      const action = player.action;
+      const sourceType = player.source_type;
+      const sourceTeamKey = player.team_key;
+      const destinationType =
+        player.destination_type === 'waivers'
+          ? 'freeagents'
+          : player.destination_type;
+      const destinationTeamKey = player.destination_team_key;
+      const playerInTransaction = {
+        player_key: playerKey,
+        action: action,
+        source_type: sourceType,
+        source_team_key: sourceTeamKey,
+        destination_type: destinationType,
+        destination_team_key: destinationTeamKey,
+      };
+      playersInTransaction.push(playerInTransaction);
+    });
+    const statement = `insert into transactions (transaction_key,league_key,"type","timestamp",players_in_transaction)
+        values ('${transactionKey}','${leagueKey}','${type}',${timestamp},'${JSON.stringify(
+      playersInTransaction
+    )}');`;
+    statements.push(statement);
+  });
+  fs.writeFileSync(writeFile, statements.join('\r\n'));
+};
+
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
 // generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
 // generateNflPlayersInsertStatements();
+// generateTransactionsInsertStatements();
