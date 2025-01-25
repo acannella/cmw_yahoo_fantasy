@@ -7,4 +7,6 @@ const prisma = new PrismaClient();
 
 const getAllFantasyRosters = async function () {};
 
-const updateFantasyRosters = async function () {};
+const updateFantasyRosters = async function () {
+  const yf = new YahooFantasy();
+};
