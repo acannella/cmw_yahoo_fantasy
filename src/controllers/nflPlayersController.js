@@ -3,49 +3,73 @@ const initYahooFantasy = require('../../utils/initYahooFantasy');
 
 const prisma = new PrismaClient();
 
+//Get league related data that will be used for most queries: most recent leaguekey, gamekey, and teamkeys
+const getLeagueMetadata = async function () {
+  try {
+    const gameKey = (
+      await prisma.league_metadata.aggregate({
+        _max: { game_key: true },
+      })
+    )._max.game_key;
+
+    const leagueKey = (
+      await prisma.league_metadata.findFirst({
+        where: { game_key: gameKey },
+      })
+    ).league_key;
+
+    const teamKeys = (
+      await prisma.fantasy_teams.findMany({
+        where: { league_key: leagueKey },
+        where: { fantasy_team_key: { not: 'FA' } },
+        select: { fantasy_team_key: true },
+      })
+    ).map((teamKeyObj) => teamKeyObj.fantasy_team_key);
+
+    return { gameKey, leagueKey, teamKeys };
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
 const getAllFantasyRosters = async function () {};
 
-//This needs to be documented and potentially refactored
 const updateFantasyRosters = async function () {
   try {
     const yf = await initYahooFantasy();
-
-    const gameKey = await prisma.league_metadata.aggregate({
-      _max: { game_key: true },
-    });
-
-    const leagueKey = await prisma.league_metadata.findFirst({
-      where: { game_key: gameKey._max.game_key },
-    });
-    const teamKeys = await prisma.fantasy_teams.findMany({
-      where: { league_key: leagueKey.league_key },
-      where: { fantasy_team_key: { not: 'FA' } },
-      select: { fantasy_team_key: true },
-    });
-
-    for (const teamKey of teamKeys) {
-      const teamRosterObj = await yf.team.roster(teamKey.fantasy_team_key);
-      const rosterPlayers = [];
-      teamRosterObj.roster.forEach((player) => {
-        rosterPlayers.push(player.player_key);
-      });
-      const rosterInDB = await prisma.nfl_players.findMany({
-        where: {
-          league_key: leagueKey.league_key,
-          team_key: teamKey.fantasy_team_key,
-        },
-        select: { player_key: true },
-      });
-
-      const playerKeysInDB = rosterInDB.map(
-        (playerKeyObj) => playerKeyObj.player_key
+    const leagueMetadata = await getLeagueMetadata();
+    //Loop through all teams for the leagueKey
+    for (const teamKey of leagueMetadata.teamKeys) {
+      const yahooRosterObj = await yf.team.roster(teamKey);
+      //Get playerKeys from the response from yahoo this is the current roster for the teamKey
+      const yahooRosterPlayers = yahooRosterObj.roster.map(
+        (player) => player.player_key
       );
-      for (const playerKeyObj of playerKeysInDB) {
-        if (!rosterPlayers.includes(playerKeyObj)) {
+      //Get playerKeys for the players associated to the teamKey in the DB
+      const rosterInDB = (
+        await prisma.nfl_players.findMany({
+          where: {
+            league_key: leagueMetadata.league_key,
+            team_key: teamKey,
+          },
+          select: { player_key: true },
+        })
+      ).map((playerKeyObj) => playerKeyObj.player_key);
+      //If rosters in the db and yahoo are the same, move to the next team
+      if (
+        rosterInDB.length === yahooRosterPlayers.length &&
+        rosterInDB.every((player) => yahooRosterPlayers.includes(player))
+      ) {
+        continue;
+      }
+
+      for (const playerKey of rosterInDB) {
+        //If a playerKey in the DB is not in the data from yahoo, set the player record teamKey to 'FA' which removes them from the roster in the DB.
+        if (!yahooRosterPlayers.includes(playerKey)) {
           const nflPlayerID = await prisma.nfl_players.findFirst({
             where: {
-              player_key: playerKeyObj,
-              league_key: leagueKey.league_key,
+              player_key: playerKey,
+              league_key: leagueMetadata.leagueKey,
             },
             select: { id: true },
           });
@@ -55,18 +79,19 @@ const updateFantasyRosters = async function () {
           });
         }
       }
-      for (const player of rosterPlayers) {
+      //Get playerID from the yahoo roster, update the player in the DB to have the teamKey, adding them to the roster
+      for (const player of yahooRosterPlayers) {
         const nflPlayerID = await prisma.nfl_players.findFirst({
           where: {
             player_key: player,
-            league_key: leagueKey.league_key,
+            league_key: leagueMetadata.leagueKey,
           },
           select: { id: true },
         });
 
         await prisma.nfl_players.update({
           where: { id: nflPlayerID.id },
-          data: { team_key: teamKey.fantasy_team_key },
+          data: { team_key: teamKey },
         });
       }
     }
