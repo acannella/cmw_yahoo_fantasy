@@ -41,3 +41,5 @@ const getTopTenScoringPlayers = async function (year, start, end) {
   });
   return topScoringPlayerData;
 };
+
+module.exports = getTopTenScoringPlayers;
