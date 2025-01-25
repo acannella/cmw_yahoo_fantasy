@@ -32,7 +32,21 @@ const getLeagueMetadata = async function () {
   }
 };
 
-const getAllFantasyRosters = async function () {};
+const getAllFantasyRosters = async function () {
+  const leagueMetadata = await getLeagueMetadata();
+  const allFantasyRosters = [];
+  for (const teamKey of leagueMetadata.teamKeys) {
+    const teamRosterPlayerKeys = (
+      await prisma.nfl_players.findMany({
+        where: { team_key: teamKey, league_key: leagueMetadata.leagueKey },
+        select: { player_key: true },
+      })
+    ).map((player) => player.player_key);
+    const teamRoster = { teamKey, teamRosterPlayerKeys };
+    allFantasyRosters.push(teamRoster);
+  }
+  return allFantasyRosters;
+};
 
 const updateFantasyRosters = async function () {
   try {
@@ -99,5 +113,3 @@ const updateFantasyRosters = async function () {
     return console.log(err);
   }
 };
-
-updateFantasyRosters();
