@@ -23,7 +23,6 @@ const getTopTenScoringPlayers = async function (year, start, end) {
   const $ = await cheerio.fromURL(
     `${fantasyprosUrl}year=${year}&start=${start}&end=${end}`
   );
-  const fileName = `week_${start}_to_${end}_year_${year}_top_scorers.json`;
 
   //Select the first 10 rows in the table which represent the top scorers of the given year and week
   const $rows = $('tr[class*="mpb-player"]:nth-child(-n + 10)');
@@ -40,13 +39,5 @@ const getTopTenScoringPlayers = async function (year, start, end) {
     };
     topScoringPlayerData.push(playerScore);
   });
-  const topScorersObject = {
-    year,
-    week_start: start,
-    week_end: end,
-    topScorers: topScoringPlayerData,
-  };
-  await writeTopScorersToFile(fileName, topScorersObject);
+  return topScoringPlayerData;
 };
-
-getTopTenScoringPlayers(2024, 17, 17);
