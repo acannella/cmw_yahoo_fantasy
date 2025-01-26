@@ -4,7 +4,10 @@ const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
 
 const prisma = new PrismaClient();
 
-//Get league related data that will be used for most queries: most recent leaguekey, gamekey, and teamkeys
+/**
+ * Get league related data that will be used for most queries
+ * @returns {object} Object with gameKey,leagueKey, array of teamKeys
+ */
 const getLeagueMetadata = async function () {
   try {
     const gameKey = (
@@ -33,6 +36,10 @@ const getLeagueMetadata = async function () {
   }
 };
 
+/**
+ * Get all player keys for each team in the league
+ * @returns {[object]} Array of objects containing the teamKey and an array of playerKeys for that team
+ */
 const getAllFantasyRosters = async function () {
   try {
     const leagueMetadata = await getLeagueMetadata();
@@ -52,14 +59,21 @@ const getAllFantasyRosters = async function () {
     return console.log(err);
   }
 };
-//TODO: resolve scenario where fantasy pros name differs from yahoo name: Patrick Mahomes vs Patrick Mahomes II
 
+/**
+ *
+ * @param {number} year - Four digit year that you want to get the data for
+ * @param {number} weekStart - First week you want to pull data for
+ * @param {number} weekEnd - Last week you want to pull data for
+ * @returns {[object]} Array of objects containing playerRank,playerName,points scored, and manager name for the supplied year and weeks
+ */
 const getTopTenScoringPlayersAndOwnership = async function (
   year,
   weekStart,
   weekEnd
 ) {
   try {
+    const topScoringPlayersWithOwners = [];
     const leagueMetadata = await getLeagueMetadata();
     const topScoringPlayers = await getTopTenScoringPlayers(
       year,
@@ -67,15 +81,49 @@ const getTopTenScoringPlayersAndOwnership = async function (
       weekEnd
     );
     for (const player of topScoringPlayers) {
-      const managerTeamKey = (
-        await prisma.nfl_players.findFirst({
-          where: {
-            player_name: { contains: player.name },
-            league_key: leagueMetadata.leagueKey,
-          },
-          select: { team_key: true },
-        })
-      ).team_key;
+      const suffixes = ['Jr.', 'Sr.', 'II'];
+      let managerTeamKey;
+      /*
+      If a player has a suffix in their name in fantasy pros, there's a chance the name doesn't have a suffix in yahoo.
+      In that scenario, we try to SELECT on the name with the suffix and wihout
+      */
+      if (suffixes.some((suffix) => player.name.includes(suffix))) {
+        for (const suffix of suffixes) {
+          if (player.name.includes(suffix)) {
+            const nameNoSuffix = player.name
+              .slice(0, player.name.indexOf(suffix))
+              .trim();
+            managerTeamKey = (
+              await prisma.nfl_players.findFirst({
+                where: {
+                  OR: [
+                    {
+                      player_name: player.name,
+                      league_key: leagueMetadata.leagueKey,
+                    },
+                    {
+                      player_name: nameNoSuffix,
+                      league_key: leagueMetadata.leagueKey,
+                    },
+                  ],
+                },
+                select: { team_key: true },
+              })
+            ).team_key;
+            break;
+          }
+        }
+      } else {
+        managerTeamKey = (
+          await prisma.nfl_players.findFirst({
+            where: {
+              player_name: player.name,
+              league_key: leagueMetadata.leagueKey,
+            },
+            select: { team_key: true },
+          })
+        ).team_key;
+      }
       const managerTeamName = (
         await prisma.fantasy_teams.findFirst({
           where: {
@@ -85,26 +133,33 @@ const getTopTenScoringPlayersAndOwnership = async function (
           select: { name: true },
         })
       ).name;
-      console.log(
-        `${player.rank},${player.name},${player.points},${managerTeamName}`
-      );
+      topScoringPlayersWithOwners.push({
+        playerRank: player.rank,
+        playerName: player.name,
+        points: player.points,
+        managerTeamName,
+      });
     }
+    return topScoringPlayersWithOwners;
   } catch (err) {
     return console.log(err);
   }
 };
 
-getTopTenScoringPlayersAndOwnership(2024, 12, 12);
-
+/**
+ * Loop through each team in the league, get the rosters from yahoo and the database, and compare them.
+ * If the rosters are the same, move on to the next team. If they are not, treat yahoo's roster as the source of truth.
+ * Set the teamKey to FA if a player is in the rosterDB that is not in yahoo.
+ * Set the player teamKeys in yahoo's roster to the current teamKey, so the two rosters are back in sync.
+ */
 const updateFantasyRosters = async function () {
   try {
     const yf = await initYahooFantasy();
     const leagueMetadata = await getLeagueMetadata();
     //Loop through all teams for the leagueKey
     for (const teamKey of leagueMetadata.teamKeys) {
-      const yahooRosterObj = await yf.team.roster(teamKey);
       //Get playerKeys from the response from yahoo this is the current roster for the teamKey
-      const yahooRosterPlayers = yahooRosterObj.roster.map(
+      const yahooRosterPlayers = (await yf.team.roster(teamKey)).roster.map(
         (player) => player.player_key
       );
       //Get playerKeys for the players associated to the teamKey in the DB
