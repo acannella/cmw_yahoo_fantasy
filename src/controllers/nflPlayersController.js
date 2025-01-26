@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const initYahooFantasy = require('../../utils/initYahooFantasy');
+const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
 
 const prisma = new PrismaClient();
 
@@ -33,20 +34,67 @@ const getLeagueMetadata = async function () {
 };
 
 const getAllFantasyRosters = async function () {
-  const leagueMetadata = await getLeagueMetadata();
-  const allFantasyRosters = [];
-  for (const teamKey of leagueMetadata.teamKeys) {
-    const teamRosterPlayerKeys = (
-      await prisma.nfl_players.findMany({
-        where: { team_key: teamKey, league_key: leagueMetadata.leagueKey },
-        select: { player_key: true },
-      })
-    ).map((player) => player.player_key);
-    const teamRoster = { teamKey, teamRosterPlayerKeys };
-    allFantasyRosters.push(teamRoster);
+  try {
+    const leagueMetadata = await getLeagueMetadata();
+    const allFantasyRosters = [];
+    for (const teamKey of leagueMetadata.teamKeys) {
+      const teamRosterPlayerKeys = (
+        await prisma.nfl_players.findMany({
+          where: { team_key: teamKey, league_key: leagueMetadata.leagueKey },
+          select: { player_key: true },
+        })
+      ).map((player) => player.player_key);
+      const teamRoster = { teamKey, teamRosterPlayerKeys };
+      allFantasyRosters.push(teamRoster);
+    }
+    return allFantasyRosters;
+  } catch (err) {
+    return console.log(err);
   }
-  return allFantasyRosters;
 };
+//TODO: resolve scenario where fantasy pros name differs from yahoo name: Patrick Mahomes vs Patrick Mahomes II
+
+const getTopTenScoringPlayersAndOwnership = async function (
+  year,
+  weekStart,
+  weekEnd
+) {
+  try {
+    const leagueMetadata = await getLeagueMetadata();
+    const topScoringPlayers = await getTopTenScoringPlayers(
+      year,
+      weekStart,
+      weekEnd
+    );
+    for (const player of topScoringPlayers) {
+      const managerTeamKey = (
+        await prisma.nfl_players.findFirst({
+          where: {
+            player_name: { contains: player.name },
+            league_key: leagueMetadata.leagueKey,
+          },
+          select: { team_key: true },
+        })
+      ).team_key;
+      const managerTeamName = (
+        await prisma.fantasy_teams.findFirst({
+          where: {
+            fantasy_team_key: managerTeamKey,
+            league_key: leagueMetadata.leagueKey,
+          },
+          select: { name: true },
+        })
+      ).name;
+      console.log(
+        `${player.rank},${player.name},${player.points},${managerTeamName}`
+      );
+    }
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+getTopTenScoringPlayersAndOwnership(2024, 12, 12);
 
 const updateFantasyRosters = async function () {
   try {
