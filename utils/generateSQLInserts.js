@@ -121,7 +121,9 @@ const generateTransactionsInsertStatements = function () {
     const leagueKey = transactionsData.league_key;
     const transactionKey = transactionObject.transaction_key;
     const type = transactionObject.type;
-    const timestamp = +transactionObject.timestamp;
+    const transactionDate = new Date(
+      +transactionObject.timestamp * 1000
+    ).toISOString();
     transactionObject.players_in_transaction.forEach((player) => {
       const playerKey = player.player_key;
       const action = player.action;
@@ -142,8 +144,8 @@ const generateTransactionsInsertStatements = function () {
       };
       playersInTransaction.push(playerInTransaction);
     });
-    const statement = `insert into transactions (transaction_key,league_key,"type","timestamp",players_in_transaction)
-        values ('${transactionKey}','${leagueKey}','${type}',${timestamp},'${JSON.stringify(
+    const statement = `insert into transactions (transaction_key,league_key,"type",transaction_date,players_in_transaction)
+        values ('${transactionKey}','${leagueKey}','${type}','${transactionDate}','${JSON.stringify(
       playersInTransaction
     )}');`;
     statements.push(statement);
@@ -156,4 +158,4 @@ const generateTransactionsInsertStatements = function () {
 // generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
 // generateNflPlayersInsertStatements();
-// generateTransactionsInsertStatements();
+generateTransactionsInsertStatements();
