@@ -100,7 +100,7 @@ model transactions {
   transaction_key        String          @db.VarChar
   league_key             String          @db.VarChar
   type                   String          @db.VarChar
-  timestamp              Int             @db.Integer
+  transaction_date       DateTime        @db.Timestamp(6)
   players_in_transaction Json            @db.Json
   league_metadata        league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "transactions_league_metadata_fk")
 }
