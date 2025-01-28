@@ -128,7 +128,7 @@ const generateTransactionsInsertStatements = function () {
       const playerKey = player.player_key;
       const action = player.action;
       const sourceType = player.source_type;
-      const sourceTeamKey = player.team_key;
+      const sourceTeamKey = player.source_team_key;
       const destinationType =
         player.destination_type === 'waivers'
           ? 'freeagents'
