@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
  * @param {number} week Week you want to get transactions for
  * @returns Array with formatted transactions
  */
-const getTransactionsForWeek = async function (week) {
+exports.getTransactionsForWeek = async function (week) {
   const leagueMetadata = await getLeagueMetadata();
   //Get the week_start and week_end values from the DB based on supplied week
   const gameWeek = await prisma.fantasy_weeks.findFirst({
