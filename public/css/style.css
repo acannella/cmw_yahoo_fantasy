@@ -1,0 +1,83 @@
+h1 {
+  font-size: 50px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 30px;
+  text-align: center;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  background-color: rgb(38, 123, 219);
+}
+
+.primary-navigation ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.primary-navigation li {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+table,
+th,
+td {
+  border: 2px solid black;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+
+table {
+  min-inline-size: 600px;
+  max-inline-size: 1000px;
+}
+
+.table-header {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.column-names {
+  font-size: 1.25rem;
+}
+
+.inline-container {
+  text-align: center;
+  vertical-align: top;
+}
+.inline-child {
+  display: inline-block;
+  padding-top: 1rem;
+  padding-right: 1rem;
+}
+.inline-child:last-child {
+  position: absolute;
+  padding-left: 1rem;
+}
+
+.week-dropdown {
+  width: 3rem;
+  position: relative;
+  top: -20px;
+}
+
+h3 {
+  position: relative;
+  top: -15px;
+}
+
+.table-spacing {
+  margin-bottom: 2rem;
+}
