@@ -1,3 +1,7 @@
+body {
+  background-color: rgb(236, 230, 230);
+}
+
 h1 {
   font-size: 50px;
   text-align: center;
@@ -68,6 +72,7 @@ table {
 }
 
 .week-dropdown {
+  background-color: rgb(245, 243, 243);
   width: 3rem;
   position: relative;
   top: -20px;
