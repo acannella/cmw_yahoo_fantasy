@@ -18,7 +18,14 @@ const controlTransactionsData = async function (week) {
   tablesView.renderTransactionsTable(transactionsData);
 };
 
+const controlStandingsData = async function () {
+  const standingsCall = await fetch(`${API_URL}standings`);
+  const standingsData = await standingsCall.json();
+  tablesView.renderStandingsTable(standingsData);
+};
+
 tablesView.addHandlerTopScoringPageLoad(controlTopScoringPlayersData);
 tablesView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
 tablesView.addHandlerTransactionsPageLoad(controlTransactionsData);
 tablesView.addHandlerTransactionsDropdown(controlTransactionsData);
+tablesView.addHandlerStandingsPageLoad(controlStandingsData);

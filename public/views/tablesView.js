@@ -5,6 +5,7 @@ class TablesView {
   );
   transactionsDropdown = document.querySelector('#transactions-dropdown');
   transactionsTableBody = document.querySelector('#transactions-table tbody');
+  standingsTableBody = document.querySelector('#standings-table tbody');
 
   //Takes in the handler function from the controller so it can be executed by the view which has access to the dropdown value
   addHandlerTopScoringPageLoad(handler) {
@@ -18,6 +19,12 @@ class TablesView {
     const transactionsDropdownValue = this.transactionsDropdown.value;
     document.addEventListener('DOMContentLoaded', function () {
       handler(+transactionsDropdownValue);
+    });
+  }
+
+  addHandlerStandingsPageLoad(handler) {
+    document.addEventListener('DOMContentLoaded', function () {
+      handler();
     });
   }
 
@@ -96,6 +103,20 @@ class TablesView {
         transactionDate,
       ]);
       this.transactionsTableBody.insertAdjacentHTML('beforeend', row);
+    });
+  }
+
+  renderStandingsTable(standingsData) {
+    standingsData.forEach((data) => {
+      const record = `${data.wins}-${data.losses}-${data.ties}`;
+      const row = this.#generateTableRow([
+        data.rank,
+        data.teamName,
+        record,
+        data.points_for,
+        data.points_against,
+      ]);
+      this.standingsTableBody.insertAdjacentHTML('beforeend', row);
     });
   }
 }
