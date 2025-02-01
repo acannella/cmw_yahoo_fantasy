@@ -39,7 +39,7 @@ class TablesView {
     });
   }
 
-  #generateStandardTableRow(data) {
+  #generateTableRow(data) {
     let rowString = '';
     data.forEach((el) => {
       rowString += `<td>${el}</td>`;
@@ -50,7 +50,7 @@ class TablesView {
   //This gets called by the controller after it gets the data from the model
   renderTopScoringTable(playerData) {
     playerData.forEach((player) => {
-      const row = this.#generateStandardTableRow([
+      const row = this.#generateTableRow([
         player.playerRank,
         player.playerName,
         player.points,
@@ -89,10 +89,13 @@ class TablesView {
           }
         }
       });
-      this.transactionsTableBody.insertAdjacentHTML(
-        'beforeend',
-        `<tr><td>${teamNameHTMLString}</td><td>${actionHTMLString}</td><td>${playerHTMLString}</td><td>${transactionDate}</td></tr>`
-      );
+      const row = this.#generateTableRow([
+        teamNameHTMLString,
+        actionHTMLString,
+        playerHTMLString,
+        transactionDate,
+      ]);
+      this.transactionsTableBody.insertAdjacentHTML('beforeend', row);
     });
   }
 }
