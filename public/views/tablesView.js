@@ -6,6 +6,23 @@ class TablesView {
   transactionsDropdown = document.querySelector('#transactions-dropdown');
   transactionsTableBody = document.querySelector('#transactions-table tbody');
   standingsTableBody = document.querySelector('#standings-table tbody');
+  navButtons = document.querySelectorAll('.nav-button');
+
+  setUpNav() {
+    this.navButtons.forEach((btn) => {
+      btn.addEventListener('click', function (e) {
+        if (btn.classList.contains('button-selected')) {
+          console.log(`I'm the current button, no changes needed`);
+        } else {
+          const oldSelected = document.querySelector('.button-selected');
+          console.log(`Removing selected from ${oldSelected.textContent}`);
+          oldSelected.classList.remove('button-selected');
+          btn.classList.add('button-selected');
+          console.log(`New selected is ${btn.textContent}`);
+        }
+      });
+    });
+  }
 
   //Takes in the handler function from the controller so it can be executed by the view which has access to the dropdown value
   addHandlerTopScoringPageLoad(handler) {

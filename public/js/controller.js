@@ -29,3 +29,4 @@ tablesView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
 tablesView.addHandlerTransactionsPageLoad(controlTransactionsData);
 tablesView.addHandlerTransactionsDropdown(controlTransactionsData);
 tablesView.addHandlerStandingsPageLoad(controlStandingsData);
+tablesView.setUpNav();
