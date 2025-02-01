@@ -1,14 +1,14 @@
 const express = require('express');
-const nflPlayersController = require('../src/controllers/nflPlayersController');
-const transactionsController = require('../src/controllers/transactionsController');
+const nflPlayersMiddleware = require('../src/middleware/nflPlayersMiddleware');
+const transactionsMiddleware = require('../src/middleware/transactionsMiddleware');
 
 const router = express.Router();
 
-router.get('/transactions', transactionsController.transactionsForWeek);
-router.get('/rosters', nflPlayersController.getTeamRosters);
+router.get('/transactions', transactionsMiddleware.transactionsForWeek);
+router.get('/rosters', nflPlayersMiddleware.getTeamRosters);
 router.get(
   '/topScoringPlayers',
-  nflPlayersController.getTopScoringPlayersByWeek
+  nflPlayersMiddleware.getTopScoringPlayersByWeek
 );
 
 module.exports = router;
