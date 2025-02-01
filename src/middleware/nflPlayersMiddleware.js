@@ -1,7 +1,7 @@
 const nflPlayersQueries = require('../queries/nflPlayersQueries');
 
 exports.getTeamRosters = async function (req, res) {
-  const rosters = await nflPlayersQueries.getAllFantasyRosters();
+  const rosters = await nflPlayersQueries.getRosters();
   res.status(200).send(rosters);
 };
 
