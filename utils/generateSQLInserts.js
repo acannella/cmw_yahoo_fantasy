@@ -45,8 +45,8 @@ const generateFantasyStandingsInsertStatements = function () {
   const standingsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
   standingsData.forEach((standingObject) => {
     const wins = +standingObject.standings.outcome_totals.wins;
-    const losses = +standingObject.standings.outcome_totals.wins;
-    const ties = +standingObject.standings.outcome_totals.wins;
+    const losses = +standingObject.standings.outcome_totals.losses;
+    const ties = +standingObject.standings.outcome_totals.ties;
     const rank = +standingObject.standings.rank;
     const playOffSeed = +standingObject.standings.playoff_seed;
     const pointsAgainst =
@@ -155,7 +155,7 @@ const generateTransactionsInsertStatements = function () {
 
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
-// generateFantasyStandingsInsertStatements();
+generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
 // generateNflPlayersInsertStatements();
-generateTransactionsInsertStatements();
+// generateTransactionsInsertStatements();
