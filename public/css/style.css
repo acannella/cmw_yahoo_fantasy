@@ -13,25 +13,35 @@ h2 {
 }
 
 header {
-  display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px;
+  padding: 5px;
   background-color: rgb(38, 123, 219);
 }
 
 .primary-navigation ul {
   display: flex;
+  justify-content: space-around;
+  align-items: center;
   gap: 20px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.primary-navigation li {
+.primary-navigation button {
+  font-size: 20px;
+  height: 50px;
   color: black;
   font-weight: bold;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(38, 123, 219);
+}
+
+.primary-navigation button:hover {
+  background-color: rgb(45, 140, 248);
 }
 
 table,
