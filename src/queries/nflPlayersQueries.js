@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
 const leagueQueries = require('./leagueQueries');
+const initYahooFantasy = require('../../utils/initYahooFantasy');
 
 const prisma = new PrismaClient();
 
@@ -8,7 +9,7 @@ const prisma = new PrismaClient();
  * Get all player keys for each team in the league
  * @returns {Promise<Array>} Array of objects containing the teamKey and an array of playerKeys for that team
  */
-exports.getAllFantasyRosters = async function () {
+const getAllFantasyRosters = async function () {
   try {
     const leagueMetadata = await leagueQueries.getLeagueMetadata();
     const allFantasyRosters = [];
@@ -23,6 +24,40 @@ exports.getAllFantasyRosters = async function () {
       allFantasyRosters.push(teamRoster);
     }
     return allFantasyRosters;
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+exports.getRosters = async function () {
+  try {
+    const leagueRosters = [];
+    const yf = await initYahooFantasy();
+    const { teamKeys } = await leagueQueries.getLeagueMetadata();
+    for (const teamKey of teamKeys) {
+      const teamRoster = [];
+      const teamRosterData = await yf.team.roster(teamKey);
+      teamRosterData.roster.forEach((player) => {
+        const name = player.name.full;
+        const nfl_team_abbr = player.editorial_team_abbr;
+        const bye_week = player.bye_weeks.week;
+        const uniform_number = player.uniform_number;
+        const display_position = player.display_position;
+        const selected_position = player.selected_position;
+        const playerRosterData = {
+          name,
+          nfl_team_abbr,
+          bye_week,
+          uniform_number,
+          display_position,
+          selected_position,
+        };
+        teamRoster.push(playerRosterData);
+      });
+      const teamRosterObject = { name: teamRosterData.name, teamRoster };
+      leagueRosters.push(teamRosterObject);
+    }
+    return leagueRosters;
   } catch (err) {
     return console.log(err);
   }
