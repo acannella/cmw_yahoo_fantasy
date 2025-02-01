@@ -12,36 +12,22 @@ class TablesView {
     this.navButtons.forEach((btn) => {
       btn.addEventListener('click', function (e) {
         if (btn.classList.contains('button-selected')) {
-          console.log(`I'm the current button, no changes needed`);
-        } else {
-          const oldSelected = document.querySelector('.button-selected');
-          console.log(`Removing selected from ${oldSelected.textContent}`);
-          oldSelected.classList.remove('button-selected');
-          btn.classList.add('button-selected');
-          console.log(`New selected is ${btn.textContent}`);
+          const header = document.querySelector('header');
+          console.log(header);
+          console.log(header.nextElementSibling);
         }
       });
     });
   }
 
-  //Takes in the handler function from the controller so it can be executed by the view which has access to the dropdown value
-  addHandlerTopScoringPageLoad(handler) {
+  //Take in the 3 handlers for page load: loading topscoring players, transactions, and standings
+  addHandlersPageLoad(handlers) {
     const topScoringDropdownValue = this.topScoringDropdown.value;
-    document.addEventListener('DOMContentLoaded', function () {
-      handler(+topScoringDropdownValue);
-    });
-  }
-
-  addHandlerTransactionsPageLoad(handler) {
     const transactionsDropdownValue = this.transactionsDropdown.value;
     document.addEventListener('DOMContentLoaded', function () {
-      handler(+transactionsDropdownValue);
-    });
-  }
-
-  addHandlerStandingsPageLoad(handler) {
-    document.addEventListener('DOMContentLoaded', function () {
-      handler();
+      handlers[0](+topScoringDropdownValue);
+      handlers[1](+transactionsDropdownValue);
+      handlers[2]();
     });
   }
 

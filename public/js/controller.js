@@ -24,9 +24,12 @@ const controlStandingsData = async function () {
   tablesView.renderStandingsTable(standingsData);
 };
 
-tablesView.addHandlerTopScoringPageLoad(controlTopScoringPlayersData);
+tablesView.addHandlersPageLoad([
+  controlTopScoringPlayersData,
+  controlTransactionsData,
+  controlStandingsData,
+]);
 tablesView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
-tablesView.addHandlerTransactionsPageLoad(controlTransactionsData);
 tablesView.addHandlerTransactionsDropdown(controlTransactionsData);
-tablesView.addHandlerStandingsPageLoad(controlStandingsData);
+
 tablesView.setUpNav();
