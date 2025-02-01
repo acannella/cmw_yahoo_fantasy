@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
-const getLeagueMetadata = require('../../utils/getLeagueMetadata');
+const leagueQueries = require('./leagueQueries');
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
  */
 exports.getAllFantasyRosters = async function () {
   try {
-    const leagueMetadata = await getLeagueMetadata();
+    const leagueMetadata = await leagueQueries.getLeagueMetadata();
     const allFantasyRosters = [];
     for (const teamKey of leagueMetadata.teamKeys) {
       const teamRosterPlayerKeys = (
@@ -42,7 +42,7 @@ exports.getTopTenScoringPlayersAndOwnership = async function (
 ) {
   try {
     const topScoringPlayersWithOwners = [];
-    const leagueMetadata = await getLeagueMetadata();
+    const leagueMetadata = await leagueQueries.getLeagueMetadata();
     const topScoringPlayers = await getTopTenScoringPlayers(
       year,
       weekStart,

@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const getLeagueMetadata = require('../../utils/getLeagueMetadata');
+const leagueQueries = require('./leagueQueries');
 const formattedDateFromDB = require('../../utils/formattedDateFromDB');
 
 const prisma = new PrismaClient();
@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * @returns Array with formatted transactions
  */
 exports.getTransactionsForWeek = async function (week) {
-  const leagueMetadata = await getLeagueMetadata();
+  const leagueMetadata = await leagueQueries.getLeagueMetadata();
   //Get the week_start and week_end values from the DB based on supplied week
   const gameWeek = await prisma.fantasy_weeks.findFirst({
     where: { league_key: leagueMetadata.league_key, week_number: week },
