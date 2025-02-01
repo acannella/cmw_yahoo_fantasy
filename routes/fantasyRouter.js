@@ -4,13 +4,17 @@ const transactionsMiddleware = require('../src/middleware/transactionsMiddleware
 const leagueMiddleware = require('../src/middleware/leagueMiddleware');
 
 const router = express.Router();
+const API_PATH = '/api/v1';
 
-router.get('/transactions', transactionsMiddleware.transactionsForWeek);
-router.get('/rosters', nflPlayersMiddleware.getTeamRosters);
 router.get(
-  '/topScoringPlayers',
+  `${API_PATH}/transactions`,
+  transactionsMiddleware.transactionsForWeek
+);
+router.get(`${API_PATH}/rosters`, nflPlayersMiddleware.getTeamRosters);
+router.get(
+  `${API_PATH}/topscoringplayers`,
   nflPlayersMiddleware.getTopScoringPlayersByWeek
 );
-router.get('/standings', leagueMiddleware.getCurrentStandings);
+router.get(`${API_PATH}/standings`, leagueMiddleware.getCurrentStandings);
 
 module.exports = router;
