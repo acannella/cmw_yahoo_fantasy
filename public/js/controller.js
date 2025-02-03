@@ -1,4 +1,4 @@
-import tablesView from '../views/tablesView.js';
+import homePageView from '../views/homePageView.js';
 
 const API_URL = 'http://localhost:3000/';
 
@@ -8,28 +8,32 @@ const controlTopScoringPlayersData = async function (week) {
   );
 
   const topScoringPlayersData = await topScoringCall.json();
-  tablesView.renderTopScoringTable(topScoringPlayersData);
+  homePageView.renderTopScoringTable(topScoringPlayersData);
 };
 
 const controlTransactionsData = async function (week) {
   const transactionsCall = await fetch(`${API_URL}transactions?week=${week}`);
 
   const transactionsData = await transactionsCall.json();
-  tablesView.renderTransactionsTable(transactionsData);
+  homePageView.renderTransactionsTable(transactionsData);
 };
 
 const controlStandingsData = async function () {
   const standingsCall = await fetch(`${API_URL}standings`);
   const standingsData = await standingsCall.json();
-  tablesView.renderStandingsTable(standingsData);
+  homePageView.renderStandingsTable(standingsData);
 };
 
-tablesView.addHandlersPageLoad([
+homePageView.addHandlersPageLoad([
   controlTopScoringPlayersData,
   controlTransactionsData,
   controlStandingsData,
 ]);
-tablesView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
-tablesView.addHandlerTransactionsDropdown(controlTransactionsData);
+// homePageView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
+// homePageView.addHandlerTransactionsDropdown(controlTransactionsData);
 
-tablesView.setUpNav();
+homePageView.setUpNav([
+  controlTopScoringPlayersData,
+  controlTransactionsData,
+  controlStandingsData,
+]);
