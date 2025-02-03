@@ -1,51 +1,90 @@
-class TablesView {
-  topScoringDropdown = document.querySelector('#top-scoring-dropdown');
-  topScoringTableBody = document.querySelector(
-    '#top-scoring-players-table tbody'
-  );
-  transactionsDropdown = document.querySelector('#transactions-dropdown');
-  transactionsTableBody = document.querySelector('#transactions-table tbody');
-  standingsTableBody = document.querySelector('#standings-table tbody');
-  navButtons = document.querySelectorAll('.nav-button');
+class HomePageView {
+  basePageHTML = [];
+
+  #setPageElements() {
+    this.topScoringDropdown = document.querySelector('#top-scoring-dropdown');
+    this.topScoringTableBody = document.querySelector(
+      '#top-scoring-players-table tbody'
+    );
+    this.transactionsDropdown = document.querySelector(
+      '#transactions-dropdown'
+    );
+    this.transactionsTableBody = document.querySelector(
+      '#transactions-table tbody'
+    );
+    this.standingsTableBody = document.querySelector('#standings-table tbody');
+    this.navButtons = document.querySelectorAll('.nav-button');
+    this.header = document.querySelector('header');
+  }
+
+  #setDropdownHandlers() {
+    const self = this;
+    this.topScoringDropdown.addEventListener('change', function () {
+      const topScoringDropdownValue = self.topScoringDropdown.value;
+      self.topScoringTableBody.innerHTML = '';
+      self.homePageHandlers[0](+topScoringDropdownValue);
+    });
+    this.transactionsDropdown.addEventListener('change', function () {
+      const transactionsDropdownValue = self.transactionsDropdown.value;
+      self.transactionsTableBody.innerHTML = '';
+      self.homePageHandlers[1](+transactionsDropdownValue);
+    });
+  }
 
   setUpNav() {
     this.navButtons.forEach((btn) => {
+      const self = this;
       btn.addEventListener('click', function (e) {
         if (btn.classList.contains('button-selected')) {
-          const header = document.querySelector('header');
-          console.log(header);
-          console.log(header.nextElementSibling);
+          let elem = self.header.nextElementSibling;
+          while (elem) {
+            elem = elem.nextElementSibling;
+
+            if (elem) elem.previousElementSibling.remove();
+          }
+          setTimeout(() => {
+            self.#rebuildHomePage();
+            const topScoringDropdownValue = self.topScoringDropdown.value;
+            const transactionsDropdownValue = self.transactionsDropdown.value;
+            self.homePageHandlers[0](+topScoringDropdownValue);
+            self.homePageHandlers[1](+transactionsDropdownValue);
+            self.homePageHandlers[2]();
+          }, 5000);
         }
       });
     });
   }
 
+  #rebuildHomePage() {
+    let currnode = this.header;
+    this.basePageHTML.forEach((element) => {
+      currnode.insertAdjacentHTML('afterend', element);
+      currnode = currnode.nextElementSibling;
+    });
+    this.#setPageElements();
+    this.#setDropdownHandlers();
+  }
+
   //Take in the 3 handlers for page load: loading topscoring players, transactions, and standings
   addHandlersPageLoad(handlers) {
+    this.homePageHandlers = handlers;
+    this.#setPageElements();
+    this.#setDropdownHandlers();
     const topScoringDropdownValue = this.topScoringDropdown.value;
     const transactionsDropdownValue = this.transactionsDropdown.value;
+    const self = this;
     document.addEventListener('DOMContentLoaded', function () {
+      //Store the html of the homepage before adding data to it
+      let elem = self.header.nextElementSibling;
+      while (elem) {
+        if (elem.nodeName !== 'SCRIPT')
+          self.basePageHTML.push(elem.outerHTML.toString());
+        elem = elem.nextElementSibling;
+      }
+
       handlers[0](+topScoringDropdownValue);
       handlers[1](+transactionsDropdownValue);
       handlers[2]();
-    });
-  }
-
-  addHandlerTopScoringDropdown(handler) {
-    const self = this;
-    this.topScoringDropdown.addEventListener('change', function () {
-      const topScoringDropdownValue = self.topScoringDropdown.value;
-      self.topScoringTableBody.innerHTML = '';
-      handler(+topScoringDropdownValue);
-    });
-  }
-
-  addHandlerTransactionsDropdown(handler) {
-    const self = this;
-    this.transactionsDropdown.addEventListener('change', function () {
-      const transactionsDropdownValue = self.transactionsDropdown.value;
-      self.transactionsTableBody.innerHTML = '';
-      handler(+transactionsDropdownValue);
     });
   }
 
@@ -124,4 +163,4 @@ class TablesView {
   }
 }
 
-export default new TablesView();
+export default new HomePageView();
