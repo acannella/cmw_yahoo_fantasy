@@ -1,5 +1,10 @@
-class HomePageView {
-  basePageHTML = [];
+import View from './view.js';
+
+class HomePageView extends View {
+  constructor() {
+    super();
+    this.basePageHTML = [];
+  }
 
   #setPageElements() {
     this.topScoringDropdown = document.querySelector('#top-scoring-dropdown');
@@ -13,8 +18,6 @@ class HomePageView {
       '#transactions-table tbody'
     );
     this.standingsTableBody = document.querySelector('#standings-table tbody');
-    this.navButtons = document.querySelectorAll('.nav-button');
-    this.header = document.querySelector('header');
   }
 
   #setDropdownHandlers() {
@@ -31,61 +34,37 @@ class HomePageView {
     });
   }
 
-  setUpNav() {
-    this.navButtons.forEach((btn) => {
-      const self = this;
-      btn.addEventListener('click', function (e) {
-        if (btn.classList.contains('button-selected')) {
-          let elem = self.header.nextElementSibling;
-          while (elem) {
-            elem = elem.nextElementSibling;
-
-            if (elem) elem.previousElementSibling.remove();
-          }
-          setTimeout(() => {
-            self.#rebuildHomePage();
-            const topScoringDropdownValue = self.topScoringDropdown.value;
-            const transactionsDropdownValue = self.transactionsDropdown.value;
-            self.homePageHandlers[0](+topScoringDropdownValue);
-            self.homePageHandlers[1](+transactionsDropdownValue);
-            self.homePageHandlers[2]();
-          }, 5000);
-        }
-      });
-    });
-  }
-
-  #rebuildHomePage() {
+  rebuildHomePage() {
     let currnode = this.header;
     this.basePageHTML.forEach((element) => {
       currnode.insertAdjacentHTML('afterend', element);
       currnode = currnode.nextElementSibling;
     });
-    this.#setPageElements();
-    this.#setDropdownHandlers();
+    this.initHomePage();
   }
 
-  //Take in the 3 handlers for page load: loading topscoring players, transactions, and standings
-  addHandlersPageLoad(handlers) {
-    this.homePageHandlers = handlers;
+  //Take in the 4 handlers for page load: loading topscoring players, transactions, and standings, nav handler
+  initHomePage(handlers) {
+    if (handlers) this.homePageHandlers = handlers;
     this.#setPageElements();
     this.#setDropdownHandlers();
+    super.addNavigationHandler(this.homePageHandlers[3]);
     const topScoringDropdownValue = this.topScoringDropdown.value;
     const transactionsDropdownValue = this.transactionsDropdown.value;
-    const self = this;
-    document.addEventListener('DOMContentLoaded', function () {
+
+    if (this.basePageHTML.length < 1) {
       //Store the html of the homepage before adding data to it
-      let elem = self.header.nextElementSibling;
+      let elem = this.header.nextElementSibling;
       while (elem) {
         if (elem.nodeName !== 'SCRIPT')
-          self.basePageHTML.push(elem.outerHTML.toString());
+          this.basePageHTML.push(elem.outerHTML.toString());
         elem = elem.nextElementSibling;
       }
+    }
 
-      handlers[0](+topScoringDropdownValue);
-      handlers[1](+transactionsDropdownValue);
-      handlers[2]();
-    });
+    this.homePageHandlers[0](+topScoringDropdownValue);
+    this.homePageHandlers[1](+transactionsDropdownValue);
+    this.homePageHandlers[2]();
   }
 
   #generateTableRow(data) {

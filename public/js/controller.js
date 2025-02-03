@@ -24,16 +24,23 @@ const controlStandingsData = async function () {
   homePageView.renderStandingsTable(standingsData);
 };
 
-homePageView.addHandlersPageLoad([
-  controlTopScoringPlayersData,
-  controlTransactionsData,
-  controlStandingsData,
-]);
-// homePageView.addHandlerTopScoringDropdown(controlTopScoringPlayersData);
-// homePageView.addHandlerTransactionsDropdown(controlTransactionsData);
+const controlNavigation = function (buttonID) {
+  if (buttonID.includes('home')) {
+    homePageView.rebuildHomePage();
+  }
+  if (buttonID.includes('rosters')) {
+  }
+  if (buttonID.includes('newsletters')) {
+  }
+  if (buttonID.includes('record')) {
+  }
+  if (buttonID.includes('about')) {
+  }
+};
 
-homePageView.setUpNav([
+homePageView.initHomePage([
   controlTopScoringPlayersData,
   controlTransactionsData,
   controlStandingsData,
+  controlNavigation,
 ]);
