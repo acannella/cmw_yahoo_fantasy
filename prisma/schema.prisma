@@ -104,3 +104,11 @@ model transactions {
   players_in_transaction Json            @db.Json
   league_metadata        league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "transactions_league_metadata_fk")
 }
+
+model record_book {
+  id          Int    @id(map: "record_book_pk") @default(autoincrement())
+  record_name String @db.VarChar
+  team_name   String @db.VarChar
+  year        Int    @db.Integer
+  record_data String @db.VarChar
+}
