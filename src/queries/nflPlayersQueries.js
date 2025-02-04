@@ -38,7 +38,10 @@ exports.getRosters = async function () {
       const teamRoster = [];
       const teamRosterData = await yf.team.roster(teamKey);
       teamRosterData.roster.forEach((player) => {
-        const name = player.name.full;
+        const name =
+          player.display_position === 'DEF'
+            ? player.editorial_team_full_name
+            : player.name.full;
         const nfl_team_abbr = player.editorial_team_abbr;
         const bye_week = player.bye_weeks.week;
         const uniform_number = player.uniform_number;
