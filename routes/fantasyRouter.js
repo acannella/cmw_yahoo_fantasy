@@ -16,5 +16,6 @@ router.get(
   nflPlayersMiddleware.getTopScoringPlayersByWeek
 );
 router.get(`${API_PATH}/standings`, leagueMiddleware.getCurrentStandings);
+router.get(`${API_PATH}/recordbook`, leagueMiddleware.getRecordBook);
 
 module.exports = router;

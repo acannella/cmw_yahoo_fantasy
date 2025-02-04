@@ -68,3 +68,18 @@ exports.getLeagueStandings = async function () {
     return console.log(err);
   }
 };
+
+exports.getRecordBook = async function () {
+  try {
+    return await prisma.record_book.findMany({
+      select: {
+        record_name: true,
+        team_name: true,
+        year: true,
+        record_data: true,
+      },
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+};
