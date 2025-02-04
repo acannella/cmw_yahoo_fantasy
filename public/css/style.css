@@ -9,7 +9,7 @@ h1 {
 
 h2 {
   font-size: 30px;
-  text-align: center;
+  text-align: left;
 }
 
 header {
@@ -99,4 +99,40 @@ h3 {
 
 .trade-to {
   color: rgb(3, 115, 243);
+}
+
+.roster {
+  float: left;
+}
+
+.roster td {
+  text-align: center;
+}
+
+.rosters-spinner {
+  display: block;
+  margin: auto;
+  padding-top: 5rem;
+  width: fit-content;
+}
+
+.loading-icon {
+  height: 5rem;
+  width: 5rem;
+  margin-left: 4rem;
+  display: inline;
+  animation: rotate 2s infinite linear;
+}
+.loading-message {
+  font-size: 30px;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
