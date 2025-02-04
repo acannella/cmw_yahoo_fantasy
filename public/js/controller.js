@@ -1,6 +1,9 @@
 import homePageView from '../views/homePageView.js';
+import rostersPageView from '../views/rostersPageView.js';
 
 const API_URL = 'http://localhost:3000/api/v1';
+let rosterData;
+let rosterDataLoaded = false;
 
 const controlTopScoringPlayersData = async function (week) {
   const topScoringCall = await fetch(
@@ -23,12 +26,27 @@ const controlStandingsData = async function () {
   const standingsData = await standingsCall.json();
   homePageView.renderStandingsTable(standingsData);
 };
+//If this rosterData hasn't been stored yet, get the data, store the data, dispatch event
+const controlRostersData = async function () {
+  if (!rosterData) {
+    const rostersCall = await fetch(`${API_URL}/rosters`);
+    rosterData = await rostersCall.json();
+    rosterDataLoaded = true;
+    const event = new Event('rosters_loaded');
+    window.dispatchEvent(event);
+  }
+};
 
 const controlNavigation = function (buttonID) {
   if (buttonID.includes('home')) {
     homePageView.rebuildHomePage();
   }
   if (buttonID.includes('rosters')) {
+    rostersPageView.displayLoadingIcon();
+    if (rosterDataLoaded) {
+      rostersPageView.clearHTML();
+      rostersPageView.displayRosters(rosterData);
+    }
   }
   if (buttonID.includes('newsletters')) {
   }
@@ -38,9 +56,14 @@ const controlNavigation = function (buttonID) {
   }
 };
 
-homePageView.initHomePage([
-  controlTopScoringPlayersData,
-  controlTransactionsData,
-  controlStandingsData,
-  controlNavigation,
-]);
+const init = function () {
+  controlRostersData();
+  homePageView.initHomePage([
+    controlTopScoringPlayersData,
+    controlTransactionsData,
+    controlStandingsData,
+    controlNavigation,
+  ]);
+};
+
+init();
