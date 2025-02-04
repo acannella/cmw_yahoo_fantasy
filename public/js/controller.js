@@ -1,5 +1,7 @@
 import homePageView from '../views/homePageView.js';
 import rostersPageView from '../views/rostersPageView.js';
+import aboutPageView from '../views/aboutPageView.js';
+import recordBookPageView from '../views/recordBookView.js';
 
 const API_URL = 'http://localhost:3000/api/v1';
 let rosterData;
@@ -26,6 +28,12 @@ const controlStandingsData = async function () {
   const standingsData = await standingsCall.json();
   homePageView.renderStandingsTable(standingsData);
 };
+const controlRecordBookData = async function () {
+  const recordBookCall = await fetch(`${API_URL}/recordbook`);
+  const recordBookData = await recordBookCall.json();
+  recordBookPageView.displayRecords(recordBookData);
+};
+
 //If this rosterData hasn't been stored yet, get the data, store the data, dispatch event
 const controlRostersData = async function () {
   if (!rosterData) {
@@ -51,8 +59,10 @@ const controlNavigation = function (buttonID) {
   if (buttonID.includes('newsletters')) {
   }
   if (buttonID.includes('record')) {
+    controlRecordBookData();
   }
   if (buttonID.includes('about')) {
+    aboutPageView.renderAboutPage();
   }
 };
 
