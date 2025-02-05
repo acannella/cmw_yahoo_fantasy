@@ -2,6 +2,7 @@ import homePageView from '../views/homePageView.js';
 import rostersPageView from '../views/rostersPageView.js';
 import aboutPageView from '../views/aboutPageView.js';
 import recordBookPageView from '../views/recordBookView.js';
+import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
 
 const controlTopScoringPlayersData = async function (week) {
@@ -41,6 +42,7 @@ const controlNavigation = function (buttonID) {
     }
   }
   if (buttonID.includes('newsletters')) {
+    newsletterPageView.renderPage();
   }
   if (buttonID.includes('record')) {
     recordBookPageView.displayRecords(model.state.recordBookData);
