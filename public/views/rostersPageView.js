@@ -26,10 +26,10 @@ class RostersPageView extends View {
     });
   }
   #generateTeamRosterTable(name) {
-    const tableHTML = `<table class="rosters-table">
+    const tableHTML = `<div class="spacer"></div><table class="rosters-table">
       <thead>
         <tr>
-          <th colspan="4">Roster</th>
+          <th colspan="4" class="table-header">${name}</th>
         </tr>
         <tr>
           <th>Pos</th>
@@ -37,7 +37,7 @@ class RostersPageView extends View {
           <th>NFL Team</th>
           <th>Bye</th>
         </tr></thead><tbody></tbody>`;
-    return `<h2>${name}</h2>${tableHTML}`;
+    return `${tableHTML}`;
   }
 
   #generateTableRow(data) {
