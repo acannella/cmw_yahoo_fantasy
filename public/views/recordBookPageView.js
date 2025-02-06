@@ -18,10 +18,10 @@ class RecordBookPageView extends View {
     });
   }
   #generateLeagueWinnersTable() {
-    const tableHTML = `<table class="league-winners-table">
+    const tableHTML = `<div class="spacer"></div><table class="league-winners-table">
       <thead>
-        <tr>
-          <th colspan="3">League Winners</th>
+        <tr >
+          <th colspan="3" class="table-header">League Winners</th>
         </tr>
         <tr>
           <th>Year</th>
