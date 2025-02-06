@@ -30,12 +30,12 @@ class NewsletterPageView extends View {
     return `<h3 class="newsletter-week-header">Week</h3><select class="newsletter-week-dropdown">${optionsString}</select>`;
   }
   #generateNewsletterFrame(newsletter) {
-    return `<iframe src="${newsletter}" width="750" height="750" marginwidth="0"
+    return `<iframe src="${newsletter}" width="800" height="750" marginwidth="0"
  marginheight="0"></iframe>`;
   }
 
   #generateheader(number) {
-    return `<h2>Week ${number} Newsletter</h2>`;
+    return `<div class="spacer"></div><div class="newsletter-header"><h2>Week ${number} Newsletter</h2></div>`;
   }
   renderNewsletter(weekNumber, newsletter) {
     const newsletterContainer = document.querySelector('.newsletter-container');
