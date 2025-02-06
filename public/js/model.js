@@ -3,6 +3,7 @@ const API_URL = 'http://localhost:3000/api/v1';
 export const state = {
   topScoringMap: new Map(),
   transactionsMap: new Map(),
+  newsletterLinksMap: new Map(),
 };
 
 export const loadTopScoringPlayers = async function (week) {
@@ -60,5 +61,16 @@ export const loadRosterData = async function () {
     return state.rosterData;
   } else {
     return state.rosterData;
+  }
+};
+
+export const loadNewsletterData = async function () {
+  if (state.newsletterLinksMap.size === 0) {
+    const newsletterLinksCall = await fetch(`${API_URL}/newsletters`);
+    const newsletterLinksData = await newsletterLinksCall.json();
+
+    newsletterLinksData.forEach((element) => {
+      state.newsletterLinksMap.set(element.week, element.newsletter_link);
+    });
   }
 };
