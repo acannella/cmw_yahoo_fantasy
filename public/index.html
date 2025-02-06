@@ -3,13 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <link href="css/style.css" rel="stylesheet" />
     <title>California's Most Wanted</title>
   </head>
   <body>
-    <h1><b>California's Most Wanted</b></h1>
+    <h1 class="roboto"><b>California's Most Wanted</b></h1>
     <header>
-      <nav class="primary-navigation">
+      <nav class="primary-navigation roboto-header">
         <ul>
           <li>
             <button class="nav-button button-selected" id="home-button">
@@ -39,8 +45,8 @@
       <div class="inline-child">
         <table id="top-scoring-players-table">
           <thead>
-            <tr class="table-header">
-              <th colspan="4">Top Scoring Players</th>
+            <tr>
+              <th colspan="4" class="table-header">Top Scoring Players</th>
             </tr>
             <tr class="column-names">
               <th>Rank</th>
@@ -80,8 +86,8 @@
       <div class="inline-child">
         <table id="transactions-table">
           <thead>
-            <tr class="table-header">
-              <th colspan="4">Transactions</th>
+            <tr>
+              <th colspan="4" class="table-header">Transactions</th>
             </tr>
             <tr class="column-names">
               <th>Team Name</th>
@@ -119,8 +125,8 @@
     <div class="table-spacing"></div>
     <table id="standings-table">
       <thead>
-        <tr class="table-header">
-          <th colspan="6">Standings</th>
+        <tr>
+          <th colspan="6" class="table-header">Standings</th>
         </tr>
         <tr class="column-names">
           <th>Rank</th>
