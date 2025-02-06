@@ -112,3 +112,10 @@ model record_book {
   year        Int    @db.Integer
   record_data String @db.VarChar
 }
+
+model newsletters {
+  id              Int    @id(map: "newsletters_pk") @default(autoincrement())
+  year            Int    @db.Integer
+  week            Int    @db.Integer
+  newsletter_link String @db.VarChar
+}
