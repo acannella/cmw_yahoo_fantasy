@@ -83,3 +83,15 @@ exports.getRecordBook = async function () {
     return console.log(err);
   }
 };
+
+//Return year 2024 records for now, in the future maybe the year gets set in a config file or something
+exports.getNewsletterLinks = async function () {
+  try {
+    return await prisma.newsletters.findMany({
+      where: { year: 2024 },
+      select: { week: true, newsletter_link: true },
+    });
+  } catch (err) {
+    return console.log(err);
+  }
+};

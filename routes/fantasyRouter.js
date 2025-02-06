@@ -17,5 +17,6 @@ router.get(
 );
 router.get(`${API_PATH}/standings`, leagueMiddleware.getCurrentStandings);
 router.get(`${API_PATH}/recordbook`, leagueMiddleware.getRecordBook);
+router.get(`${API_PATH}/newsletters`, leagueMiddleware.getNewsletters);
 
 module.exports = router;

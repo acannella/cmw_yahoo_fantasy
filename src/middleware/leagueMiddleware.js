@@ -9,3 +9,8 @@ exports.getRecordBook = async function (req, res) {
   const recordBook = await leagueQueries.getRecordBook();
   res.status(200).send(recordBook);
 };
+
+exports.getNewsletters = async function (req, res) {
+  const newsletterLinks = await leagueQueries.getNewsletterLinks();
+  res.status(200).send(newsletterLinks);
+};
