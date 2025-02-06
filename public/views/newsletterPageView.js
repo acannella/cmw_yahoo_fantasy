@@ -5,11 +5,47 @@ class NewsletterPageView extends View {
     super();
   }
 
-  renderPage() {
+  renderPage(newslettersCount, currNewsletter, handler) {
+    const dropdown = this.#generateDropdown(newslettersCount);
+    const newsletterFrame = this.#generateNewsletterFrame(currNewsletter);
+    const newsletterHeader = this.#generateheader(newslettersCount);
     this.header.insertAdjacentHTML(
       'afterend',
-      `<div class="doc-container"><h2>Week 15 Newsletter</h2><iframe src="https://docs.google.com/document/d/e/2PACX-1vTD91Uf2HabV71W6ASaSn-lw4VI1t3KSjWW8xHzIBsHq0jLohaB7yc0zlP7sqAsMYHRwQ_n8NZLibFm/pub?embedded=true" width="750" height="750" marginwidth="0"
- marginheight="0"></iframe></div>`
+      `<div class="newsletter-page-container"><div class="newsletter-container">${newsletterHeader}${newsletterFrame}</div><div class="newsletter-dropdown-container">${dropdown}</div></div>`
+    );
+    const weekDropdown = document.querySelector('.newsletter-week-dropdown');
+    weekDropdown.value = newslettersCount;
+    weekDropdown.addEventListener('change', function () {
+      handler(this.value);
+    });
+  }
+  #generateDropdown(number) {
+    let i = 1;
+    let optionsString = '';
+    while (i <= number) {
+      optionsString += `<option value="${i}">${i}</option>`;
+
+      i++;
+    }
+    return `<h3 class="newsletter-week-header">Week</h3><select class="newsletter-week-dropdown">${optionsString}</select>`;
+  }
+  #generateNewsletterFrame(newsletter) {
+    return `<iframe src="${newsletter}" width="750" height="750" marginwidth="0"
+ marginheight="0"></iframe>`;
+  }
+
+  #generateheader(number) {
+    return `<h2>Week ${number} Newsletter</h2>`;
+  }
+  renderNewsletter(weekNumber, newsletter) {
+    const newsletterContainer = document.querySelector('.newsletter-container');
+    const newsletterHeader = this.#generateheader(weekNumber);
+    const newsletterFrame = this.#generateNewsletterFrame(newsletter);
+
+    newsletterContainer.innerHTML = '';
+    newsletterContainer.insertAdjacentHTML(
+      'afterbegin',
+      `${newsletterHeader}${newsletterFrame}`
     );
   }
 }

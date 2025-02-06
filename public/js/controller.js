@@ -23,6 +23,17 @@ const controlRecordBookData = async function () {
   await model.loadRecordBookData();
 };
 
+const controlNewslettersData = async function () {
+  await model.loadNewsletterData();
+};
+
+const controlRenderNewsletter = async function (week) {
+  newsletterPageView.renderNewsletter(
+    week,
+    model.state.newsletterLinksMap.get(+week)
+  );
+};
+
 //Dispatch event after roster data is loaded, this will remove the loading icon when navigating to the Rosters page
 const controlRostersData = async function () {
   await model.loadRosterData();
@@ -42,7 +53,13 @@ const controlNavigation = function (buttonID) {
     }
   }
   if (buttonID.includes('newsletters')) {
-    newsletterPageView.renderPage();
+    const newslettersCount = model.state.newsletterLinksMap.size;
+    const currNewsletter = model.state.newsletterLinksMap.get(newslettersCount);
+    newsletterPageView.renderPage(
+      newslettersCount,
+      currNewsletter,
+      controlRenderNewsletter
+    );
   }
   if (buttonID.includes('record')) {
     recordBookPageView.displayRecords(model.state.recordBookData);
@@ -54,6 +71,7 @@ const controlNavigation = function (buttonID) {
 
 const init = function () {
   controlRecordBookData();
+  controlNewslettersData();
   controlRostersData();
   homePageView.initHomePage([
     controlTopScoringPlayersData,
