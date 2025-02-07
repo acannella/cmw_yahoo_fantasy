@@ -42,6 +42,7 @@ model league_metadata {
   game_key         Int                @db.Integer
   start_date       String             @db.VarChar
   end_date         String             @db.VarChar
+  current_week     Int                @db.Integer
   fantasy_weeks    fantasy_weeks[]
   fantasy_teams    fantasy_teams[]
   matchups         matchups[]
