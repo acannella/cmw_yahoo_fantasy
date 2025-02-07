@@ -24,7 +24,7 @@ class NewsletterPageView extends View {
     pageContainer
       .querySelector('.data-container')
       .insertAdjacentHTML('afterbegin', newsletterFrame + dropdown);
-    const weekDropdown = document.querySelector('.newsletter-week-dropdown');
+    const weekDropdown = document.querySelector('.week-dropdown');
     weekDropdown.value = newslettersCount;
     weekDropdown.addEventListener('change', function () {
       handler(this.value);
@@ -38,7 +38,7 @@ class NewsletterPageView extends View {
 
       i++;
     }
-    return `<div class="dropdown-container"><h3 class="newsletter-week-header">Week</h3><select class="newsletter-week-dropdown">${optionsString}</select></div>`;
+    return `<div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown">${optionsString}</select></div>`;
   }
   #generateNewsletterFrame(newsletter) {
     return `<iframe src="${newsletter}" width="800" height="750" marginwidth="0"
