@@ -33,7 +33,8 @@ class HomePageView extends View {
     });
   }
 
-  #initTables() {
+  #initTables(currentWeek) {
+    const dropdownOptions = this.#dropdownOptions(currentWeek);
     const topScoringTable = `<div class="data-container"><table id="top-scoring-players-table">
           <thead>
             <tr>
@@ -47,7 +48,7 @@ class HomePageView extends View {
             </tr>
           </thead>
           <tbody></tbody>
-        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="top-scoring-dropdown"><option value="1">1</option><option value="2">2</option></select></div></div><div class="spacer"></div>`;
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="top-scoring-dropdown">${dropdownOptions}</select></div></div><div class="spacer"></div>`;
     const transactionsTable = `<div class="data-container"><table id="transactions-table">
           <thead>
             <tr>
@@ -61,7 +62,7 @@ class HomePageView extends View {
             </tr>
           </thead>
           <tbody></tbody>
-        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="transactions-dropdown"><option value="1">1</option><option value="2">2</option></select></div></div><div class="spacer"></div>`;
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="transactions-dropdown">${dropdownOptions}</select></div></div><div class="spacer"></div>`;
     const standingsTable = `<div class="data-container"><table id="standings-table">
           <thead>
             <tr>
@@ -76,7 +77,7 @@ class HomePageView extends View {
             </tr>
           </thead>
           <tbody></tbody>
-        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="standings-dropdown"><option value="1">1</option></select></div></div>`;
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="standings-dropdown">${dropdownOptions}</select></div></div>`;
 
     document
       .querySelector('.page-container')
@@ -86,9 +87,23 @@ class HomePageView extends View {
       );
   }
 
-  initHomePage(scoringHandler, transHandler, standingsHandler, navHandler) {
+  #dropdownOptions(currentWeek) {
+    let options = '';
+    for (let i = 1; i <= currentWeek; i++) {
+      options += `<option value="${i}">${i}</option>`;
+    }
+    return options;
+  }
+
+  initHomePage(
+    scoringHandler,
+    transHandler,
+    standingsHandler,
+    navHandler,
+    currentWeek
+  ) {
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
-    this.#initTables();
+    this.#initTables(currentWeek);
     this.#setPageElements();
     this.#setDropdownHandlers(scoringHandler, transHandler);
     super.addNavigationHandler(navHandler);

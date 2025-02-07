@@ -34,6 +34,18 @@ const controlRenderNewsletter = async function (week) {
   );
 };
 
+//Render the homepage in this function since we need the current week data to populate the dropdowns on the page
+const controlCurrentWeek = async function () {
+  await model.loadCurrentWeek();
+  homePageView.initHomePage(
+    controlTopScoringPlayersData,
+    controlTransactionsData,
+    controlStandingsData,
+    controlNavigation,
+    model.state.currentWeek
+  );
+};
+
 //Dispatch event after roster data is loaded, this will remove the loading icon when navigating to the Rosters page
 const controlRostersData = async function () {
   await model.loadRosterData();
@@ -47,7 +59,8 @@ const controlNavigation = function (buttonID) {
       controlTopScoringPlayersData,
       controlTransactionsData,
       controlStandingsData,
-      controlNavigation
+      controlNavigation,
+      model.state.currentWeek
     );
   }
   if (buttonID.includes('rosters')) {
@@ -75,15 +88,10 @@ const controlNavigation = function (buttonID) {
 };
 
 const init = function () {
+  controlCurrentWeek();
   controlRecordBookData();
   controlNewslettersData();
   controlRostersData();
-  homePageView.initHomePage(
-    controlTopScoringPlayersData,
-    controlTransactionsData,
-    controlStandingsData,
-    controlNavigation
-  );
 };
 
 init();
