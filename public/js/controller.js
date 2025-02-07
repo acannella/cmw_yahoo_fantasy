@@ -43,7 +43,12 @@ const controlRostersData = async function () {
 
 const controlNavigation = function (buttonID) {
   if (buttonID.includes('home')) {
-    homePageView.rebuildHomePage();
+    homePageView.initHomePage(
+      controlTopScoringPlayersData,
+      controlTransactionsData,
+      controlStandingsData,
+      controlNavigation
+    );
   }
   if (buttonID.includes('rosters')) {
     if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
@@ -73,12 +78,12 @@ const init = function () {
   controlRecordBookData();
   controlNewslettersData();
   controlRostersData();
-  homePageView.initHomePage([
+  homePageView.initHomePage(
     controlTopScoringPlayersData,
     controlTransactionsData,
     controlStandingsData,
-    controlNavigation,
-  ]);
+    controlNavigation
+  );
 };
 
 init();
