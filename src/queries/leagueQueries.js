@@ -14,11 +14,13 @@ exports.getLeagueMetadata = async function () {
       })
     )._max.game_key;
 
-    const leagueKey = (
-      await prisma.league_metadata.findFirst({
-        where: { game_key: gameKey },
-      })
-    ).league_key;
+    const leagueData = await prisma.league_metadata.findFirst({
+      where: { game_key: gameKey },
+      select: { league_key: true, current_week: true },
+    });
+
+    const leagueKey = leagueData.league_key;
+    const currentWeek = leagueData.current_week;
 
     const teamKeys = (
       await prisma.fantasy_teams.findMany({
@@ -28,7 +30,7 @@ exports.getLeagueMetadata = async function () {
       })
     ).map((teamKeyObj) => teamKeyObj.fantasy_team_key);
 
-    return { gameKey, leagueKey, teamKeys };
+    return { gameKey, leagueKey, currentWeek, teamKeys };
   } catch (err) {
     return console.log(err);
   }

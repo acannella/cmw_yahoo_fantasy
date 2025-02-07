@@ -14,3 +14,8 @@ exports.getNewsletters = async function (req, res) {
   const newsletterLinks = await leagueQueries.getNewsletterLinks();
   res.status(200).send(newsletterLinks);
 };
+
+exports.getCurrentWeek = async function (req, res) {
+  const currentWeekData = await leagueQueries.getLeagueMetadata();
+  res.status(200).send({ currentWeek: currentWeekData.currentWeek });
+};
