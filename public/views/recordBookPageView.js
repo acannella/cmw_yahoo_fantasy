@@ -5,8 +5,17 @@ class RecordBookPageView extends View {
     super();
   }
 
+  #generateContainers() {
+    this.header.insertAdjacentHTML('afterend', super.generateContainers());
+    const pageContainer = document.querySelector('.page-container');
+    pageContainer.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="data-container"></div>`
+    );
+  }
+
   displayRecords(recordData) {
-    this.header.insertAdjacentHTML('afterend', this.generateContainers());
+    this.#generateContainers();
     const dataContainer = document.querySelector('.data-container');
     dataContainer.insertAdjacentHTML(
       'beforeend',
