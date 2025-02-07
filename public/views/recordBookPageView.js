@@ -6,8 +6,10 @@ class RecordBookPageView extends View {
   }
 
   displayRecords(recordData) {
-    this.header.insertAdjacentHTML(
-      'afterend',
+    this.header.insertAdjacentHTML('afterend', this.generateContainers());
+    const dataContainer = document.querySelector('.data-container');
+    dataContainer.insertAdjacentHTML(
+      'beforeend',
       this.#generateLeagueWinnersTable()
     );
     const leagueWinnersTable = document.querySelector('.league-winners-table');
@@ -18,7 +20,7 @@ class RecordBookPageView extends View {
     });
   }
   #generateLeagueWinnersTable() {
-    const tableHTML = `<div class="spacer"></div><table class="league-winners-table">
+    const tableHTML = `<table class="league-winners-table">
       <thead>
         <tr >
           <th colspan="3" class="table-header">League Winners</th>
