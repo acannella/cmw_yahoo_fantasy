@@ -30,7 +30,7 @@ export default class View {
   }
 
   generateContainers() {
-    return `<div class="page-container"><div class="data-container"><div class="spacer"></div></div></div>`;
+    return `<div class="spacer"></div><div class="page-container"></div>`;
   }
 
   clearHTML() {
@@ -45,9 +45,9 @@ export default class View {
     let elem = document.querySelector('.data-container');
     while (
       elem.hasChildNodes() &&
-      !elem.lastElementChild.classList.contains('spacer')
+      !elem.firstElementChild.classList.contains('dropdown-container')
     ) {
-      elem.lastElementChild.remove();
+      elem.firstElementChild.remove();
     }
   }
 }
