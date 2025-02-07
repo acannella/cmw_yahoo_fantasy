@@ -9,8 +9,7 @@ class NewsletterPageView extends View {
     const dropdown = this.#generateDropdown(newslettersCount);
     const newsletterFrame = this.#generateNewsletterFrame(currNewsletter);
     const newsletterHeader = this.#generateheader(newslettersCount);
-    const containers = this.generateContainers();
-    this.header.insertAdjacentHTML('afterend', containers);
+    this.header.insertAdjacentHTML('afterend', this.generateContainers());
     const pageContainer = document.querySelector('.page-container');
     pageContainer
       .querySelector('.data-container')
