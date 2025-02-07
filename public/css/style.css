@@ -3,8 +3,13 @@ body {
 }
 
 h1 {
-  font-size: 50px;
+  font-size: 55px;
   text-align: center;
+  font-family: 'Roboto', serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: normal;
+  font-variation-settings: 'wdth' 100;
 }
 
 header {
@@ -27,10 +32,6 @@ header {
 
 .primary-navigation button {
   font-family: 'Roboto', serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-  font-variation-settings: 'wdth' 100;
   font-size: 25px;
   height: 50px;
   color: black;
@@ -47,29 +48,8 @@ header {
 }
 
 table {
-  min-inline-size: 800px;
+  min-inline-size: 900px;
   max-inline-size: 1000px;
-}
-
-.inline-container {
-  text-align: center;
-  vertical-align: top;
-}
-.inline-child {
-  display: inline-block;
-  padding-top: 1rem;
-  padding-right: 1rem;
-}
-.inline-child:last-child {
-  position: absolute;
-  padding-left: 1rem;
-}
-
-.week-dropdown {
-  background-color: rgb(245, 243, 243);
-  width: 3rem;
-  position: relative;
-  top: -20px;
 }
 
 h3 {
@@ -120,30 +100,22 @@ h3 {
 
 .page-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .data-container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
-.newsletter-dropdown-container {
-  position: relative;
-  top: -300px;
-  left: 5%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  line-height: 0px;
+.dropdown-container {
+  padding-top: 1rem;
+  padding-left: 3rem;
 }
 
-.newsletter-week-dropdown {
-  background-color: rgb(245, 243, 243);
+.week-dropdown {
+  background-color: #e8f1f2;
   width: 3rem;
 }
 
@@ -155,9 +127,10 @@ h3 {
   align-items: center;
   justify-content: center;
   border: 2px solid black;
+  margin-right: 6rem;
 }
 
-.newsletter-week-header {
+.dropdown-week-header {
   margin: auto;
 }
 
@@ -165,14 +138,6 @@ iframe {
   border-left: 2px solid black;
   border-right: 2px solid black;
   border-bottom: 2px solid black;
-}
-
-.roboto {
-  font-family: 'Roboto', serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-  font-variation-settings: 'wdth' 100;
 }
 
 .spacer {
@@ -212,10 +177,4 @@ h2 {
   font-family: 'Roboto', serif;
   margin-top: auto;
   margin-bottom: auto;
-}
-
-.record-heading {
-  background-color: #006494;
-  height: 3rem;
-  margin-bottom: 2rem;
 }
