@@ -74,3 +74,8 @@ export const loadNewsletterData = async function () {
     });
   }
 };
+
+export const loadCurrentWeek = async function () {
+  const currentWeekCall = await fetch(`${API_URL}/metadata`);
+  state.currentWeek = (await currentWeekCall.json()).currentWeek;
+};
