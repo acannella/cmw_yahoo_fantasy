@@ -3,7 +3,6 @@ import View from './view.js';
 class HomePageView extends View {
   constructor() {
     super();
-    this.basePageHTML = [];
   }
 
   #setPageElements() {
@@ -20,51 +19,84 @@ class HomePageView extends View {
     this.standingsTableBody = document.querySelector('#standings-table tbody');
   }
 
-  #setDropdownHandlers() {
+  #setDropdownHandlers(scoringHandler, transHandler) {
     const self = this;
     this.topScoringDropdown.addEventListener('change', function () {
       const topScoringDropdownValue = self.topScoringDropdown.value;
       self.topScoringTableBody.innerHTML = '';
-      self.homePageHandlers[0](+topScoringDropdownValue);
+      scoringHandler(+topScoringDropdownValue);
     });
     this.transactionsDropdown.addEventListener('change', function () {
       const transactionsDropdownValue = self.transactionsDropdown.value;
       self.transactionsTableBody.innerHTML = '';
-      self.homePageHandlers[1](+transactionsDropdownValue);
+      transHandler(+transactionsDropdownValue);
     });
   }
 
-  rebuildHomePage() {
-    let currnode = this.header;
-    this.basePageHTML.forEach((element) => {
-      currnode.insertAdjacentHTML('afterend', element);
-      currnode = currnode.nextElementSibling;
-    });
-    this.initHomePage();
+  #initTables() {
+    const topScoringTable = `<div class="data-container"><table id="top-scoring-players-table">
+          <thead>
+            <tr>
+              <th colspan="4" class="table-header">Top Scoring Players</th>
+            </tr>
+            <tr class="column-names">
+              <th>Rank</th>
+              <th>Player Name</th>
+              <th>Points</th>
+              <th>Manager</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="top-scoring-dropdown"><option value="1">1</option><option value="2">2</option></select></div></div><div class="spacer"></div>`;
+    const transactionsTable = `<div class="data-container"><table id="transactions-table">
+          <thead>
+            <tr>
+              <th colspan="4" class="table-header">Transactions</th>
+            </tr>
+            <tr class="column-names">
+              <th>Team Name</th>
+              <th>Action</th>
+              <th>Players(s)</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="transactions-dropdown"><option value="1">1</option><option value="2">2</option></select></div></div><div class="spacer"></div>`;
+    const standingsTable = `<div class="data-container"><table id="standings-table">
+          <thead>
+            <tr>
+              <th colspan="5" class="table-header">Standings</th>
+            </tr>
+            <tr class="column-names">
+              <th>Rank</th>
+              <th>Team Name</th>
+              <th>Record</th>
+              <th>Points For</th>
+              <th>Points Against</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="standings-dropdown"><option value="1">1</option></select></div></div>`;
+
+    document
+      .querySelector('.page-container')
+      .insertAdjacentHTML(
+        'afterbegin',
+        topScoringTable + transactionsTable + standingsTable
+      );
   }
 
-  //Take in the 4 handlers for page load: loading topscoring players, transactions, and standings, nav handler
-  initHomePage(handlers) {
-    if (handlers) this.homePageHandlers = handlers;
+  initHomePage(scoringHandler, transHandler, standingsHandler, navHandler) {
+    this.header.insertAdjacentHTML('afterend', this.generateContainers());
+    this.#initTables();
     this.#setPageElements();
-    this.#setDropdownHandlers();
-    super.addNavigationHandler(this.homePageHandlers[3]);
+    this.#setDropdownHandlers(scoringHandler, transHandler);
+    super.addNavigationHandler(navHandler);
     const topScoringDropdownValue = this.topScoringDropdown.value;
     const transactionsDropdownValue = this.transactionsDropdown.value;
-
-    if (this.basePageHTML.length < 1) {
-      //Store the html of the homepage before adding data to it
-      let elem = this.header.nextElementSibling;
-      while (elem) {
-        if (elem.nodeName !== 'SCRIPT')
-          this.basePageHTML.push(elem.outerHTML.toString());
-        elem = elem.nextElementSibling;
-      }
-    }
-
-    this.homePageHandlers[0](+topScoringDropdownValue);
-    this.homePageHandlers[1](+transactionsDropdownValue);
-    this.homePageHandlers[2]();
+    scoringHandler(+topScoringDropdownValue);
+    transHandler(+transactionsDropdownValue);
+    standingsHandler();
   }
 
   #generateTableRow(data) {
