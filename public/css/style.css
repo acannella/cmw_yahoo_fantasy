@@ -118,15 +118,15 @@ h3 {
   padding-top: 1rem;
 }
 
-.newsletter-container {
+.page-container {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.newsletter-page-container {
+.data-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
