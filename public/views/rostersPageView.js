@@ -5,18 +5,17 @@ class RostersPageView extends View {
     super();
   }
 
-  initRostersPage(handler) {
-    handler();
-  }
-
   displayRosters(rostersData) {
-    let currTeam = this.header;
-    rostersData.forEach((teamRosterObj) => {
-      this.header.insertAdjacentHTML(
-        'afterend',
-        this.#generateTeamRosterTable(teamRosterObj.name)
+    this.header.insertAdjacentHTML('afterend', this.generateContainers());
+    const dataContainer = document.querySelector('.page-container');
+    rostersData.forEach((teamRosterObj, index) => {
+      dataContainer.insertAdjacentHTML(
+        'beforeend',
+        this.#generateTeamRosterTable(teamRosterObj.name, index)
       );
-      const currentRosterTable = document.querySelector('.rosters-table');
+      const currentRosterTable = document.querySelector(
+        'div.data-container:last-child table'
+      );
 
       teamRosterObj.teamRoster.forEach((player) => {
         currentRosterTable
@@ -25,8 +24,10 @@ class RostersPageView extends View {
       });
     });
   }
-  #generateTeamRosterTable(name) {
-    const tableHTML = `<div class="spacer"></div><table class="rosters-table">
+  #generateTeamRosterTable(name, index) {
+    const tableHTML = `${
+      index !== 0 ? '<div class="spacer"></div>' : ''
+    }<div class="data-container"><table class="rosters-table">
       <thead>
         <tr>
           <th colspan="4" class="table-header">${name}</th>
@@ -36,7 +37,7 @@ class RostersPageView extends View {
           <th>Player Name</th>
           <th>NFL Team</th>
           <th>Bye</th>
-        </tr></thead><tbody></tbody>`;
+        </tr></thead><tbody></tbody></div>`;
     return `${tableHTML}`;
   }
 
