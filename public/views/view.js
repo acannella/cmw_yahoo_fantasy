@@ -28,11 +28,26 @@ export default class View {
       }
     });
   }
+
+  generateContainers() {
+    return `<div class="page-container"><div class="data-container"><div class="spacer"></div></div></div>`;
+  }
+
   clearHTML() {
     let elem = this.header.nextElementSibling;
     while (elem) {
       elem = elem.nextElementSibling;
       if (elem) elem.previousElementSibling.remove();
+    }
+  }
+
+  clearDataContainer() {
+    let elem = document.querySelector('.data-container');
+    while (
+      elem.hasChildNodes() &&
+      !elem.lastElementChild.classList.contains('spacer')
+    ) {
+      elem.lastElementChild.remove();
     }
   }
 }
