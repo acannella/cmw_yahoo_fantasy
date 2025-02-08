@@ -178,3 +178,24 @@ h2 {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+.plus-sign {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 2px;
+}
+
+.minus-sign {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 2px;
+}
+
+.trade-arrows {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 2px;
+}
