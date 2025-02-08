@@ -143,16 +143,27 @@ class HomePageView extends View {
       let teamNameHTMLString;
       const transactionDate = `${transaction.date}`;
       transaction.formattedTransactions.forEach((data, index) => {
+        const plusIcon = `<img src="./img/plus_sign.svg" class="plus-sign" alt="plus"/>`;
+        const minusIcon = `<img src="./img/minus_sign.svg" class="minus-sign" alt="minus"/>`;
+        const tradeIcon = `<img src="./img/trade_arrows.svg" class="trade-arrows" alt="trade"/>`;
+        const icon = `${
+          data.action === 'add'
+            ? plusIcon
+            : data.action === 'drop'
+            ? minusIcon
+            : tradeIcon
+        }`;
+
         //if first element, set the action, player, and team name
         if (index < 1) {
-          actionHTMLString = `${data.action}`;
+          actionHTMLString = `<div>${icon} ${data.action}</div>`;
           playerHTMLString = `${data.playerName}`;
           teamName = data.teamName;
           teamNameHTMLString = `${teamName}`;
         } else {
           //Iteration beyond the first, if action is not trade, append it
           actionHTMLString += !data.action.includes('trade')
-            ? `<div>${data.action}</div>`
+            ? `<div>${icon} ${data.action}</div>`
             : '';
           //if teamName that was set in iteration 1 equals the current teamname data.teamName, then append the player as normal
           if (teamName === data.teamName) {
