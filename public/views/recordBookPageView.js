@@ -5,6 +5,10 @@ class RecordBookPageView extends View {
     super();
   }
 
+  /**
+   * Insert data-container div after the page-container div that is generated from the super class
+   */
+
   #generateContainers() {
     this.header.insertAdjacentHTML('afterend', super.generateContainers());
     const pageContainer = document.querySelector('.page-container');
@@ -13,6 +17,11 @@ class RecordBookPageView extends View {
       `<div class="data-container"></div>`
     );
   }
+
+  /**
+   * Render the league winners table
+   * @param {JSON} recordData JSON of records data
+   */
 
   displayRecords(recordData) {
     this.#generateContainers();
@@ -28,6 +37,12 @@ class RecordBookPageView extends View {
         .insertAdjacentHTML('beforeend', this.#generateTableRow(record));
     });
   }
+
+  /**
+   * Generate HTML String for the league winners table
+   * @returns {String} HTML String for the league winners table
+   */
+
   #generateLeagueWinnersTable() {
     const tableHTML = `<table class="league-winners-table">
       <thead>
@@ -42,6 +57,11 @@ class RecordBookPageView extends View {
     return tableHTML;
   }
 
+  /**
+   * Generate HTML String for a table row using the supplied record data
+   * @param {JSON} data JSON containing record data
+   * @returns {String} HTML String for the table row containing the record data
+   */
   #generateTableRow(data) {
     return `<tr><td>${data.year}</td><td>${data.team_name}</td><td>${data.record_data}</td></tr>`;
   }
