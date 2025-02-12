@@ -5,30 +5,6 @@ const initYahooFantasy = require('../../utils/initYahooFantasy');
 
 const prisma = new PrismaClient();
 
-/**
- * Get all player keys for each team in the league
- * @returns {Promise<Array>} Array of objects containing the teamKey and an array of playerKeys for that team
- */
-const getAllFantasyRosters = async function () {
-  try {
-    const leagueMetadata = await leagueQueries.getLeagueMetadata();
-    const allFantasyRosters = [];
-    for (const teamKey of leagueMetadata.teamKeys) {
-      const teamRosterPlayerKeys = (
-        await prisma.nfl_players.findMany({
-          where: { team_key: teamKey, league_key: leagueMetadata.leagueKey },
-          select: { player_key: true },
-        })
-      ).map((player) => player.player_key);
-      const teamRoster = { teamKey, teamRosterPlayerKeys };
-      allFantasyRosters.push(teamRoster);
-    }
-    return allFantasyRosters;
-  } catch (err) {
-    return console.log(err);
-  }
-};
-
 exports.getRosters = async function () {
   try {
     const leagueRosters = [];
