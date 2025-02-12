@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 /**
  * Get league related data that will be used for most queries
- * @returns {object} Object with gameKey,leagueKey, array of teamKeys
+ * @returns {Promise<JSON>} Object with gameKey,leagueKey,current week, array of teamKeys
  */
 exports.getLeagueMetadata = async function () {
   try {
@@ -35,6 +35,11 @@ exports.getLeagueMetadata = async function () {
     return console.log(err);
   }
 };
+
+/**
+ * Get standing data for each team in the league
+ * @returns {Promise<JSON[]>} Array of JSON objects containing standing data for each team in league
+ */
 
 exports.getLeagueStandings = async function () {
   try {
@@ -71,6 +76,11 @@ exports.getLeagueStandings = async function () {
   }
 };
 
+/**
+ * Get recordBook data from the database
+ * @returns {Promise<JSON[]>} Array of JSON objects containing data from the recordBook table
+ */
+
 exports.getRecordBook = async function () {
   try {
     return await prisma.record_book.findMany({
@@ -86,7 +96,12 @@ exports.getRecordBook = async function () {
   }
 };
 
-//Return year 2024 records for now, in the future maybe the year gets set in a config file or something
+/**
+ * Get newsletter data from the database
+ * @returns {Promise<JSON[]>} Array of JSON objects containing newsletter data from DB
+ */
+
+//Returns year 2024 records for now, in the future maybe the year gets set in a config file or it gets passed in as a parameter
 exports.getNewsletterLinks = async function () {
   try {
     return await prisma.newsletters.findMany({
