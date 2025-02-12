@@ -34,7 +34,9 @@ const controlRenderNewsletter = async function (week) {
   );
 };
 
-//Render the homepage in this function since we need the current week data to populate the dropdowns on the page
+/**
+ * Load the current fantasy week which is needed to render the home page
+ */
 const controlCurrentWeek = async function () {
   await model.loadCurrentWeek();
   homePageView.initHomePage(
@@ -46,12 +48,17 @@ const controlCurrentWeek = async function () {
   );
 };
 
-//Dispatch event after roster data is loaded, this will remove the loading icon when navigating to the Rosters page
 const controlRostersData = async function () {
   await model.loadRosterData();
+  //Dispatch event after roster data is loaded, this will remove the loading icon when navigating to the Rosters page
   const rostersLoadedEvent = new Event('rosters_loaded');
   window.dispatchEvent(rostersLoadedEvent);
 };
+
+/**
+ * Render the page that corresponds with the button that was clicked
+ * @param {String} buttonID ID of the button element that was clicked
+ */
 
 const controlNavigation = function (buttonID) {
   if (buttonID.includes('home')) {
@@ -86,6 +93,10 @@ const controlNavigation = function (buttonID) {
     aboutPageView.renderAboutPage();
   }
 };
+
+/**
+ * Call the functions to get the data from the model to pass to the views
+ */
 
 const init = function () {
   controlCurrentWeek();
