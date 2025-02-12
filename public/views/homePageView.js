@@ -137,10 +137,8 @@ class HomePageView extends View {
     this.#setPageElements();
     this.#setDropdownHandlers(scoringHandler, transHandler);
     super.addNavigationHandler(navHandler);
-    const topScoringDropdownValue = this.topScoringDropdown.value;
-    const transactionsDropdownValue = this.transactionsDropdown.value;
-    scoringHandler(+topScoringDropdownValue);
-    transHandler(+transactionsDropdownValue);
+    scoringHandler(+this.topScoringDropdown.value);
+    transHandler(+this.transactionsDropdown.value);
     standingsHandler();
   }
 
