@@ -5,6 +5,10 @@ class HomePageView extends View {
     super();
   }
 
+  /**
+   * Assign important page elements to variables
+   */
+
   #setPageElements() {
     this.topScoringDropdown = document.querySelector('#top-scoring-dropdown');
     this.topScoringTableBody = document.querySelector(
@@ -19,6 +23,12 @@ class HomePageView extends View {
     this.standingsTableBody = document.querySelector('#standings-table tbody');
   }
 
+  /**
+   * Add event listeners to the dropdowns for top scoring players table and transactions table
+   * @param {function} scoringHandler function to execute when scoring dropdown changes
+   * @param {function} transHandler function to execute when transaction dropdown changes
+   */
+
   #setDropdownHandlers(scoringHandler, transHandler) {
     const self = this;
     this.topScoringDropdown.addEventListener('change', function () {
@@ -32,6 +42,11 @@ class HomePageView extends View {
       transHandler(+transactionsDropdownValue);
     });
   }
+
+  /**
+   * Insert table and dropdown html into the homepage
+   * @param {number} currentWeek Current fantasy week used to generate the dropdown options in dropdownOptions function
+   */
 
   #initTables(currentWeek) {
     const dropdownOptions = this.#dropdownOptions(currentWeek);
@@ -87,6 +102,12 @@ class HomePageView extends View {
       );
   }
 
+  /**
+   * Create HTML string for dropdown options
+   * @param {number} currentWeek Number of current fantasy week
+   * @returns {String} HTML dropdown options
+   */
+
   #dropdownOptions(currentWeek) {
     let options = '';
     for (let i = 1; i <= currentWeek; i++) {
@@ -94,6 +115,15 @@ class HomePageView extends View {
     }
     return options;
   }
+
+  /**
+   * Setup tables, dropdowns, and attach actionListeners to dropdowns
+   * @param {function} scoringHandler function that is executed when top scoring dropdown changes
+   * @param {function} transHandler function that is executed when transactions dropdown changes
+   * @param {function} standingsHandler function that is executed when standings dropdown changes
+   * @param {function} navHandler function that is executed when a nav button is clicked
+   * @param {number} currentWeek Current fantasy week
+   */
 
   initHomePage(
     scoringHandler,
@@ -114,6 +144,12 @@ class HomePageView extends View {
     standingsHandler();
   }
 
+  /**
+   * Generate HTML string for a table row based on supplied data
+   * @param {String[]} data Array of strings that represents the data for a table row
+   * @returns {String} HTML table row String
+   */
+
   #generateTableRow(data) {
     let rowString = '';
     data.forEach((el) => {
@@ -122,7 +158,10 @@ class HomePageView extends View {
     return `<tr>${rowString}</tr>`;
   }
 
-  //This gets called by the controller after it gets the data from the model
+  /**
+   * Insert top scoring player data into the top scoring table
+   * @param {JSON} playerData JSON Data containing data of top scoring players for a week
+   */
   renderTopScoringTable(playerData) {
     playerData.forEach((player) => {
       const row = this.#generateTableRow([
@@ -135,6 +174,11 @@ class HomePageView extends View {
     });
   }
 
+  /**
+   * Insert transaction data into the transactions table
+   * @param {JSON} transactionsData JSON Data containing data of transactions for a week
+   */
+
   renderTransactionsTable(transactionsData) {
     transactionsData.forEach((transaction) => {
       let actionHTMLString;
@@ -146,6 +190,7 @@ class HomePageView extends View {
         const plusIcon = `<img src="./img/plus_sign.svg" class="plus-sign" alt="plus"/>`;
         const minusIcon = `<img src="./img/minus_sign.svg" class="minus-sign" alt="minus"/>`;
         const tradeIcon = `<img src="./img/trade_arrows.svg" class="trade-arrows" alt="trade"/>`;
+        //Set icon html string based on the type of transaction
         const icon = `${
           data.action === 'add'
             ? plusIcon
@@ -184,6 +229,11 @@ class HomePageView extends View {
       this.transactionsTableBody.insertAdjacentHTML('beforeend', row);
     });
   }
+
+  /**
+   * Insert team standings data into the standings table
+   * @param {JSON} standingsData JSON Data containing data of the standings for a week
+   */
 
   renderStandingsTable(standingsData) {
     standingsData.forEach((data) => {
