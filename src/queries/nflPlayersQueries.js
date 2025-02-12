@@ -5,6 +5,11 @@ const initYahooFantasy = require('../../utils/initYahooFantasy');
 
 const prisma = new PrismaClient();
 
+/**
+ * Get roster data for every team in the league
+ * @returns {Promise<JSON[]>} Array of JSON Objects which contain roster data for each team
+ */
+
 exports.getRosters = async function () {
   try {
     const leagueRosters = [];
@@ -43,11 +48,11 @@ exports.getRosters = async function () {
 };
 
 /**
- *
+ * Get Array of JSON objects that contain data for top scoring players for a given year and weeks
  * @param {number} year - Four digit year that you want to get the data for
  * @param {number} weekStart - First week you want to pull data for
  * @param {number} weekEnd - Last week you want to pull data for
- * @returns {Promise<Array>}Array of objects containing playerRank,playerName,points scored, and manager name for the supplied year and weeks
+ * @returns {Promise<JSON[]>} Array of objects containing playerRank,playerName,points scored, and manager name for the supplied year and weeks
  */
 exports.getTopTenScoringPlayersAndOwnership = async function (
   year,
