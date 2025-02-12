@@ -5,8 +5,9 @@ const formattedDateFromDB = require('../../utils/formattedDateFromDB');
 const prisma = new PrismaClient();
 
 /**
+ * Get transactions from the database for a week
  * @param {number} week Week you want to get transactions for
- * @returns Array with formatted transactions
+ * @returns {Promise<JSON[]>} Array of JSON objects with formatted transactions
  */
 exports.getTransactionsForWeek = async function (week) {
   const leagueMetadata = await leagueQueries.getLeagueMetadata();
@@ -18,7 +19,6 @@ exports.getTransactionsForWeek = async function (week) {
   const weekStart = new Date(gameWeek.week_start);
   const weekEnd = new Date(gameWeek.week_end);
 
-  //Get all transactions that fall within the specified week
   const transactions = await prisma.transactions.findMany({
     where: {
       AND: [
@@ -46,13 +46,13 @@ exports.getTransactionsForWeek = async function (week) {
 };
 
 /**
- * @param {Array} transactionArray Array that contains JSON objects with transaction data
- * @returns Array of JSON objects with desired transaction data
+ * Format the data from the players in transaction array so it can be used by the views
+ * @param {JSON[]} transactionArray Array that contains JSON objects with transaction data
+ * @returns {Promise<JSON[]>} Array of JSON objects with desired transaction data
  */
 const formatTransaction = async function (transactionArray) {
   const formattedTransactionsArray = [];
   for (const transaction of transactionArray) {
-    //Get playername
     const playerName = (
       await prisma.nfl_players.findFirst({
         where: { player_key: transaction.player_key },
