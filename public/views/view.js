@@ -3,10 +3,15 @@ export default class View {
     this.navButtons = document.querySelectorAll('.nav-button');
     this.header = document.querySelector('header');
   }
+
+  /**
+   * Add actionListeners to the header and the window
+   * @param {function} handler function to be executed when a nav button is clicked
+   */
+
   addNavigationHandler(handler) {
     const self = this;
     this.header.addEventListener('click', function (e) {
-      //If click event occurs on button and it doesnt have the button selected class, update which button has that class and clean the html to prepare for rendering of new page
       if (
         e.target.tagName === 'BUTTON' &&
         !e.target.classList.contains('button-selected')
@@ -19,7 +24,7 @@ export default class View {
 
         handler(e.target.id);
       }
-      //Listen for rosters_loaded event, this will remove the loading spinner and render the data
+      //Listen for rosters_loaded event, this will remove the loading spinner and render the data after the event is heard
     });
     window.addEventListener('rosters_loaded', function () {
       const rostersSpinner = document.querySelector('.rosters-spinner');
@@ -28,6 +33,11 @@ export default class View {
       }
     });
   }
+
+  /**
+   * Generate HTML String which will be used as the base for views
+   * @returns {String} HTML String for the base of the page
+   */
 
   generateContainers() {
     return `<div class="spacer"></div><div class="page-container"></div>`;
@@ -40,6 +50,10 @@ export default class View {
       if (elem) elem.previousElementSibling.remove();
     }
   }
+
+  /**
+   * Remove elements to prepare the page to be rendered again
+   */
 
   clearDataContainer() {
     let elem = document.querySelector('.data-container');
