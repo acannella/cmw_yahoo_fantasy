@@ -32,18 +32,18 @@ class RostersPageView extends View {
 
   /**
    * Generate the HTML String for a team's roster table
-   * @param {String} name Team name
+   * @param {String} teamName
    * @param {number} index Index of the forEach iteration that calls this function
    * @returns {String} HTML String of a team's roster table
    */
 
-  #generateTeamRosterTable(name, index) {
+  #generateTeamRosterTable(teamName, index) {
     const tableHTML = `${
       index !== 0 ? '<div class="spacer"></div>' : ''
     }<div class="data-container"><table class="rosters-table">
       <thead>
         <tr>
-          <th colspan="4" class="table-header">${name}</th>
+          <th colspan="4" class="table-header">${teamName}</th>
         </tr>
         <tr>
           <th>Pos</th>
