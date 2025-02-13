@@ -1,7 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
 const leagueQueries = require('./leagueQueries');
-const initYahooFantasy = require('../../utils/initYahooFantasy');
 
 const prisma = new PrismaClient();
 
@@ -11,42 +10,33 @@ const prisma = new PrismaClient();
  */
 
 exports.getRosters = async function () {
+  const leagueRosters = [];
   try {
-    const leagueRosters = [];
-    const yf = await initYahooFantasy();
     const { teamKeys } = await leagueQueries.getLeagueMetadata();
     for (const teamKey of teamKeys) {
-      const teamRoster = [];
-      const teamRosterData = await yf.team.roster(teamKey);
-      teamRosterData.roster.forEach((player) => {
-        const name =
-          player.display_position === 'DEF'
-            ? player.editorial_team_full_name
-            : player.name.full;
-        const nfl_team_abbr = player.editorial_team_abbr;
-        const bye_week = player.bye_weeks.week;
-        const uniform_number = player.uniform_number;
-        const display_position = player.display_position;
-        const selected_position = player.selected_position;
-        const playerRosterData = {
-          name,
-          nfl_team_abbr,
-          bye_week,
-          uniform_number,
-          display_position,
-          selected_position,
-        };
-        teamRoster.push(playerRosterData);
+      const teamName = (
+        await prisma.fantasy_teams.findFirst({
+          where: { fantasy_team_key: teamKey },
+          select: { name: true },
+        })
+      ).name;
+      const teamRoster = await prisma.rosters.findMany({
+        where: { team_key: teamKey, NOT: { player_name: null } },
+        select: {
+          roster_position: true,
+          player_name: true,
+          nfl_team: true,
+          bye_week: true,
+        },
+        orderBy: { display_number: 'asc' },
       });
-      const teamRosterObject = { name: teamRosterData.name, teamRoster };
-      leagueRosters.push(teamRosterObject);
+      leagueRosters.push({ teamName, teamRoster });
     }
     return leagueRosters;
   } catch (err) {
     return console.log(err);
   }
 };
-
 /**
  * Get Array of JSON objects that contain data for top scoring players for a given year and weeks
  * @param {number} year - Four digit year that you want to get the data for

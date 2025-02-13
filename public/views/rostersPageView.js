@@ -16,7 +16,7 @@ class RostersPageView extends View {
     rostersData.forEach((teamRosterObj, index) => {
       dataContainer.insertAdjacentHTML(
         'beforeend',
-        this.#generateTeamRosterTable(teamRosterObj.name, index)
+        this.#generateTeamRosterTable(teamRosterObj.teamName, index)
       );
       const currentRosterTable = document.querySelector(
         'div.data-container:last-child table'
@@ -61,7 +61,7 @@ class RostersPageView extends View {
    */
 
   #generateTableRow(data) {
-    return `<tr><td>${data.selected_position}</td><td>${data.name}</td><td>${data.nfl_team_abbr}</td><td>${data.bye_week}</td></tr>`;
+    return `<tr><td>${data.roster_position}</td><td>${data.player_name}</td><td>${data.nfl_team}</td><td>${data.bye_week}</td></tr>`;
   }
 
   /**
