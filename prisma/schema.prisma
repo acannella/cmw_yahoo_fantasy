@@ -120,3 +120,13 @@ model newsletters {
   week            Int    @db.Integer
   newsletter_link String @db.VarChar
 }
+
+model rosters {
+  id              Int     @id(map: "rosters_pk") @default(autoincrement())
+  team_key        String  @db.VarChar
+  roster_position String? @db.VarChar
+  player_name     String? @db.VarChar
+  nfl_team        String? @db.VarChar
+  bye_week        Int?    @db.Integer
+  display_number  Int?    @db.Integer
+}
