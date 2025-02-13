@@ -39,13 +39,13 @@ const controlRenderNewsletter = async function (week) {
  */
 const controlCurrentWeek = async function () {
   await model.loadCurrentWeek();
-  homePageView.initHomePage(
-    controlTopScoringPlayersData,
-    controlTransactionsData,
-    controlStandingsData,
-    controlNavigation,
-    model.state.currentWeek
-  );
+  homePageView.initHomePage({
+    scoringHandler: controlTopScoringPlayersData,
+    transHandler: controlTransactionsData,
+    standingsHandler: controlStandingsData,
+    navHandler: controlNavigation,
+    currentWeek: model.state.currentWeek,
+  });
 };
 
 const controlRostersData = async function () {
@@ -62,13 +62,12 @@ const controlRostersData = async function () {
 
 const controlNavigation = function (buttonID) {
   if (buttonID.includes('home')) {
-    homePageView.initHomePage(
-      controlTopScoringPlayersData,
-      controlTransactionsData,
-      controlStandingsData,
-      controlNavigation,
-      model.state.currentWeek
-    );
+    homePageView.initHomePage({
+      scoringHandler: controlTopScoringPlayersData,
+      transHandler: controlTransactionsData,
+      standingsHandler: controlStandingsData,
+      currentWeek: model.state.currentWeek,
+    });
   }
   if (buttonID.includes('rosters')) {
     if (!model.state.rosterData) rostersPageView.displayLoadingIcon();

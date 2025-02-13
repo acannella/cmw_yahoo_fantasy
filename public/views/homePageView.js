@@ -118,28 +118,19 @@ class HomePageView extends View {
 
   /**
    * Setup tables, dropdowns, and attach actionListeners to dropdowns
-   * @param {function} scoringHandler function that is executed when top scoring dropdown changes
-   * @param {function} transHandler function that is executed when transactions dropdown changes
-   * @param {function} standingsHandler function that is executed when standings dropdown changes
-   * @param {function} navHandler function that is executed when a nav button is clicked
+   * @param {Object} initData Object containing data to render the Home Page:scoringHandler, transactionsHandler, standingsHandler, navigationHandler, currentWeek
    * @param {number} currentWeek Current fantasy week
    */
 
-  initHomePage(
-    scoringHandler,
-    transHandler,
-    standingsHandler,
-    navHandler,
-    currentWeek
-  ) {
+  initHomePage(initData) {
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
-    this.#initTables(currentWeek);
+    this.#initTables(initData.currentWeek);
     this.#setPageElements();
-    this.#setDropdownHandlers(scoringHandler, transHandler);
-    super.addNavigationHandler(navHandler);
-    scoringHandler(+this.topScoringDropdown.value);
-    transHandler(+this.transactionsDropdown.value);
-    standingsHandler();
+    this.#setDropdownHandlers(initData.scoringHandler, initData.transHandler);
+    if (initData.navHandler) super.addNavigationHandler(initData.navHandler);
+    initData.scoringHandler(+this.topScoringDropdown.value);
+    initData.transHandler(+this.transactionsDropdown.value);
+    initData.standingsHandler();
   }
 
   /**
