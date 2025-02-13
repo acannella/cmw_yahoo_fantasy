@@ -72,7 +72,7 @@ const controlNavigation = function (buttonID) {
   if (buttonID.includes('rosters')) {
     if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
     if (model.state.rosterData) {
-      rostersPageView.clearHTML();
+      rostersPageView.clearPageHTML();
       rostersPageView.displayRosters(model.state.rosterData);
     }
   }
