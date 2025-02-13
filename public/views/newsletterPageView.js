@@ -81,11 +81,17 @@ class NewsletterPageView extends View {
   }
 
   /**
-   * Remove the newsletter-header along with clearing other container data
+   * Remove newsletter iFrame and header
    */
 
-  #clearDataContainer() {
-    super.clearDataContainer();
+  #clearNewsletter() {
+    let elem = document.querySelector('.data-container');
+    while (
+      elem.hasChildNodes() &&
+      !elem.firstElementChild.classList.contains('dropdown-container')
+    ) {
+      elem.firstElementChild.remove();
+    }
     document.querySelector('.newsletter-header').remove();
   }
 
@@ -100,7 +106,7 @@ class NewsletterPageView extends View {
     const newsletterHeader = this.#generateheader(weekNumber);
     const newsletterFrame = this.#generateNewsletterFrame(newsletter);
 
-    this.#clearDataContainer();
+    this.#clearNewsletter();
     pageContainer.insertAdjacentHTML('afterbegin', newsletterHeader);
     pageContainer
       .querySelector('.data-container')
