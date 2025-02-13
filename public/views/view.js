@@ -20,7 +20,7 @@ export default class View {
           .querySelector('.button-selected')
           .classList.remove('button-selected');
         e.target.classList.add('button-selected');
-        self.clearHTML(self.header);
+        self.clearPageHTML(self.header);
 
         handler(e.target.id);
       }
@@ -43,25 +43,15 @@ export default class View {
     return `<div class="spacer"></div><div class="page-container"></div>`;
   }
 
-  clearHTML() {
+  /**
+   * Clear all html below the header
+   */
+
+  clearPageHTML() {
     let elem = this.header.nextElementSibling;
     while (elem) {
       elem = elem.nextElementSibling;
       if (elem) elem.previousElementSibling.remove();
-    }
-  }
-
-  /**
-   * Remove elements to prepare the page to be rendered again
-   */
-
-  clearDataContainer() {
-    let elem = document.querySelector('.data-container');
-    while (
-      elem.hasChildNodes() &&
-      !elem.firstElementChild.classList.contains('dropdown-container')
-    ) {
-      elem.firstElementChild.remove();
     }
   }
 }
