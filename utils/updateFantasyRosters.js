@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const initYahooFantasy = require('./initYahooFantasy');
-const getLeagueMetadata = require('./getLeagueMetadata');
+const leagueQueries = require('../src/queries/leagueQueries');
 
 const prisma = new PrismaClient();
 
@@ -74,3 +74,48 @@ const updateFantasyRosters = async function () {
     return console.log(err);
   }
 };
+
+const _updateFantasyRosters = async function () {
+  try {
+    const yf = await initYahooFantasy();
+    const { teamKeys } = await leagueQueries.getLeagueMetadata();
+    for (const teamKey of teamKeys) {
+      const teamRoster = (await yf.roster.fetch(teamKey)).roster;
+      for (let i = 0; i < teamRoster.length; i++) {
+        const playerName =
+          teamRoster[i].display_position === 'DEF'
+            ? teamRoster[i].editorial_team_full_name
+            : teamRoster[i].name.full;
+        const updateData = {
+          player_key: teamRoster[i].player_key,
+          name: playerName,
+          team: teamRoster[i].editorial_team_abbr,
+          bye_week: teamRoster[i].bye_weeks.week,
+          pos: teamRoster[i].selected_position,
+        };
+        const recordID = (
+          await prisma.rosters.findFirst({
+            where: { team_key: teamKey, display_number: i + 1 },
+          })
+        ).id;
+        await prisma.rosters.update({
+          where: { id: recordID },
+          data: {
+            roster_position: updateData.pos,
+            player_name: updateData.name,
+            nfl_team: updateData.team,
+            bye_week: +updateData.bye_week,
+            display_number: i + 1,
+            player_key: updateData.player_key,
+          },
+        });
+        //Now you need logic to null out any roster records that exist in the Db but are not in yahoo
+        //As an example, if I had a full roster, then dropped all my players, this update function would not fix that
+      }
+    }
+  } catch (err) {
+    return console.log(err);
+  }
+};
+
+_updateFantasyRosters();
