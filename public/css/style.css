@@ -48,8 +48,8 @@ header {
 }
 
 table {
-  min-inline-size: 900px;
-  max-inline-size: 1000px;
+  min-inline-size: 1000px;
+  max-inline-size: 1100px;
 }
 
 h3 {
@@ -195,6 +195,27 @@ h2 {
 
 .trade-arrows {
   width: 20px;
+  height: 20px;
+  position: relative;
+  top: 2px;
+}
+.no-change {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: 2px;
+  left: 20px;
+}
+
+.up-arrow {
+  width: 30px;
+  height: 20px;
+  position: relative;
+  top: 2px;
+}
+
+.down-arrow {
+  width: 30px;
   height: 20px;
   position: relative;
   top: 2px;
