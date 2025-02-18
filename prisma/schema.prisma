@@ -89,9 +89,10 @@ model league_standings {
   losses          Int             @db.Integer
   ties            Int             @db.Integer
   rank            Int             @db.Integer
-  playoff_seed    Int             @db.Integer
   points_for      Decimal         @db.Decimal(6, 2)
   points_against  Decimal         @db.Decimal(6, 2)
+  week            Int             @db.Integer
+  change          Int?            @db.Integer
   league_metadata league_metadata @relation(fields: [league_key], references: [league_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_league_metadata_fk")
   fantasy_teams   fantasy_teams   @relation(fields: [team_key], references: [fantasy_team_key], onDelete: Restrict, onUpdate: Restrict, map: "league_standings_fantasy_team_fk")
 }
