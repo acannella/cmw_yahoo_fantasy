@@ -15,8 +15,8 @@ const controlTransactionsData = async function (week) {
   homePageView.renderTransactionsTable(transactionsData);
 };
 
-const controlStandingsData = async function () {
-  const standingsData = await model.loadStandingsData();
+const controlStandingsData = async function (week) {
+  const standingsData = await model.loadStandingsData(+week);
   homePageView.renderStandingsTable(standingsData);
 };
 const controlRecordBookData = async function () {

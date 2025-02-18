@@ -21,6 +21,7 @@ class HomePageView extends View {
       '#transactions-table tbody'
     );
     this.standingsTableBody = document.querySelector('#standings-table tbody');
+    this.standingsDropdown = document.querySelector('#standings-dropdown');
   }
 
   /**
@@ -29,7 +30,7 @@ class HomePageView extends View {
    * @param {function} transHandler function to execute when transaction dropdown changes
    */
 
-  #setDropdownHandlers(scoringHandler, transHandler) {
+  #setDropdownHandlers(scoringHandler, transHandler, standingsHandler) {
     const self = this;
     this.topScoringDropdown.addEventListener('change', function () {
       const topScoringDropdownValue = self.topScoringDropdown.value;
@@ -41,6 +42,12 @@ class HomePageView extends View {
       self.transactionsTableBody.innerHTML = '';
       transHandler(+transactionsDropdownValue);
     });
+    this.standingsDropdown.addEventListener('change', function () {
+      const standingsDropdownValue = self.standingsDropdown.value;
+      console.log();
+      self.standingsTableBody.innerHTML = '';
+      standingsHandler(+standingsDropdownValue);
+    });
   }
 
   /**
@@ -50,6 +57,8 @@ class HomePageView extends View {
 
   #initTables(currentWeek) {
     const dropdownOptions = this.#dropdownOptions(currentWeek);
+    const standingsDropdownOptions =
+      this.#standingsDropdownOptions(currentWeek);
     const topScoringTable = `<div class="data-container"><table id="top-scoring-players-table">
           <thead>
             <tr>
@@ -81,18 +90,19 @@ class HomePageView extends View {
     const standingsTable = `<div class="data-container"><table id="standings-table">
           <thead>
             <tr>
-              <th colspan="5" class="table-header">Standings</th>
+              <th colspan="6" class="table-header">Standings</th>
             </tr>
             <tr class="column-names">
               <th>Rank</th>
               <th>Team Name</th>
               <th>Record</th>
+              <th>Change</th>
               <th>Points For</th>
               <th>Points Against</th>
             </tr>
           </thead>
           <tbody></tbody>
-        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="standings-dropdown">${dropdownOptions}</select></div></div>`;
+        </table><div class="dropdown-container"><h3 class="dropdown-week-header">Week</h3><select class="week-dropdown" id="standings-dropdown">${standingsDropdownOptions}</select></div></div>`;
 
     document
       .querySelector('.page-container')
@@ -116,6 +126,17 @@ class HomePageView extends View {
     return options;
   }
 
+  #standingsDropdownOptions(currentWeek) {
+    let options = '';
+    const endOfRegularSeason = 14;
+    const limit =
+      currentWeek <= endOfRegularSeason ? currentWeek : endOfRegularSeason;
+    for (let i = 1; i <= limit; i++) {
+      options += `<option value="${i}">${i}</option>`;
+    }
+    return options;
+  }
+
   /**
    * Setup tables, dropdowns, and attach actionListeners to dropdowns
    * @param {Object} initData Object containing data to render the Home Page:scoringHandler, transactionsHandler, standingsHandler, navigationHandler, currentWeek
@@ -126,11 +147,15 @@ class HomePageView extends View {
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
     this.#initTables(initData.currentWeek);
     this.#setPageElements();
-    this.#setDropdownHandlers(initData.scoringHandler, initData.transHandler);
+    this.#setDropdownHandlers(
+      initData.scoringHandler,
+      initData.transHandler,
+      initData.standingsHandler
+    );
     if (initData.navHandler) super.addNavigationHandler(initData.navHandler);
     initData.scoringHandler(+this.topScoringDropdown.value);
     initData.transHandler(+this.transactionsDropdown.value);
-    initData.standingsHandler();
+    initData.standingsHandler(+this.standingsDropdown.value);
   }
 
   /**
@@ -231,6 +256,7 @@ class HomePageView extends View {
         data.rank,
         data.teamName,
         record,
+        '',
         data.points_for,
         data.points_against,
       ]);

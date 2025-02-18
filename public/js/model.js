@@ -3,6 +3,7 @@ const API_URL = 'http://localhost:3000/api/v1';
 export const state = {
   topScoringMap: new Map(),
   transactionsMap: new Map(),
+  standingsMap: new Map(),
   newsletterLinksMap: new Map(),
 };
 
@@ -34,13 +35,14 @@ export const loadTransactionsByWeek = async function (week) {
   }
 };
 
-export const loadStandingsData = async function () {
-  if (!state.standingsData) {
-    const standingsCall = await fetch(`${API_URL}/standings`);
-    state.standingsData = await standingsCall.json();
-    return state.standingsData;
+export const loadStandingsData = async function (week) {
+  if (!state.standingsMap.has(week)) {
+    const standingsCall = await fetch(`${API_URL}/standings?week=${week}`);
+    const standingsData = await standingsCall.json();
+    state.standingsMap.set(week, standingsData);
+    return state.standingsMap.get(week);
   } else {
-    return state.standingsData;
+    return state.standingsMap.get(week);
   }
 };
 
