@@ -1,3 +1,4 @@
+const { match } = require('assert');
 const fs = require('fs');
 const path = require('path');
 
@@ -57,6 +58,41 @@ const generateFantasyStandingsInsertStatements = function () {
     statements.push(statement);
   });
 
+  fs.writeFileSync(writeFile, statements.join('\r\n'));
+};
+
+const generateFantasyStandingsFromMatchupsInsertStatements = function () {
+  const readFile = `${pathToJSON}matchups.json`;
+  const writeFile = `${pathToWrite}insertStandingsByWeekData.sql`;
+  const statements = [];
+  const matchupsData = JSON.parse(fs.readFileSync(readFile, 'utf8'));
+  matchupsData.forEach((teamMatchupsObject) => {
+    let wins = 0;
+    let losses = 0;
+    let pointsFor = 0;
+    let pointsAgainst = 0;
+    let week;
+    const leagueKey = '449.l.224437';
+    const teamKey = teamMatchupsObject.team_key;
+    teamMatchupsObject.matchups.forEach((matchup) => {
+      week = matchup.week;
+      wins = matchup.winner_team_key === teamKey ? ++wins : wins;
+      losses = matchup.loser_team_key === teamKey ? ++losses : losses;
+      pointsFor =
+        matchup.winner_team_key === teamKey
+          ? +pointsFor + +matchup.winner_points
+          : +pointsFor + +matchup.loser_points;
+      pointsAgainst =
+        matchup.winner_team_key === teamKey
+          ? +pointsAgainst + +matchup.loser_points
+          : +pointsAgainst + +matchup.winner_points;
+
+      pointsFor = Math.round(+pointsFor * 100) / 100;
+      pointsAgainst = Math.round(+pointsAgainst * 100) / 100;
+      const statement = `insert into league_standings(league_key,team_key,wins,losses,ties,rank,points_for,points_against,week) values('${leagueKey}','${teamKey}',${wins},${losses},${0},${0},${pointsFor},${pointsAgainst},${week});`;
+      statements.push(statement);
+    });
+  });
   fs.writeFileSync(writeFile, statements.join('\r\n'));
 };
 
@@ -155,7 +191,8 @@ const generateTransactionsInsertStatements = function () {
 
 // generateFantasyWeeksInsertStatements();
 // generateFantasyTeamsInsertStatements();
-generateFantasyStandingsInsertStatements();
+// generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
 // generateNflPlayersInsertStatements();
 // generateTransactionsInsertStatements();
+generateFantasyStandingsFromMatchupsInsertStatements();
