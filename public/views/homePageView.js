@@ -201,9 +201,9 @@ class HomePageView extends View {
       let teamNameHTMLString;
       const transactionDate = `${transaction.date}`;
       transaction.formattedTransactions.forEach((data, index) => {
-        const plusIcon = `<img src="./img/plus_sign.svg" class="plus-sign" alt="plus"/>`;
-        const minusIcon = `<img src="./img/minus_sign.svg" class="minus-sign" alt="minus"/>`;
-        const tradeIcon = `<img src="./img/trade_arrows.svg" class="trade-arrows" alt="trade"/>`;
+        const plusIcon = `<img src="./img/green_plus_sign.svg" class="plus-sign" alt="plus"/>`;
+        const minusIcon = `<img src="./img/red_minus_sign.svg" class="minus-sign" alt="minus"/>`;
+        const tradeIcon = `<img src="./img/blue_trade_arrows.svg" class="trade-arrows" alt="trade"/>`;
         //Set icon html string based on the type of transaction
         const icon = `${
           data.action === 'add'
@@ -252,11 +252,20 @@ class HomePageView extends View {
   renderStandingsTable(standingsData) {
     standingsData.forEach((data) => {
       const record = `${data.wins}-${data.losses}-${data.ties}`;
+      const upIcon = `<img src="./img/green_up_arrow.svg" class="up-arrow" alt="up-arrow"/>`;
+      const downIcon = `<img src="./img/red_down_arrow.svg" class="down-arrow" alt="down-arrow"/>`;
+      const noChangeIcon = `<img src="./img/black_minus_sign.svg" class="no-change" alt="no-change"/>`;
+      const changeData =
+        data.change === 0
+          ? noChangeIcon
+          : data.change > 0
+          ? `${upIcon} ${data.change}`
+          : `${downIcon}  ${Math.abs(data.change)}`;
       const row = this.#generateTableRow([
         data.rank,
         data.teamName,
         record,
-        '',
+        changeData,
         data.points_for,
         data.points_against,
       ]);
