@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const getTopTenScoringPlayers = require('../../utils/weeklyTopScoringPlayers');
+const getTopTenScoringPlayers = require('../utils/weeklyTopScoringPlayers');
 const leagueQueries = require('./leagueQueries');
 
 const prisma = new PrismaClient();

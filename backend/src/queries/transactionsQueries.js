@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const leagueQueries = require('./leagueQueries');
-const formattedDateFromDB = require('../../utils/formattedDateFromDB');
+const formattedDateFromDB = require('../utils/formattedDateFromDB');
 
 const prisma = new PrismaClient();
 
