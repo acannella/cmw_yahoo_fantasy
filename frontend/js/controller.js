@@ -42,9 +42,6 @@ const controlCurrentWeek = async function () {
 
 const controlRostersData = async function () {
   await model.loadRosterData();
-  //Dispatch event after roster data is loaded, this will remove the loading icon when navigating to the Rosters page
-  const rostersLoadedEvent = new Event('rosters_loaded');
-  window.dispatchEvent(rostersLoadedEvent);
 };
 
 /**
@@ -81,8 +78,6 @@ const route = async function (path) {
     window.history.pushState({ url: 'home' }, '', '/home');
   } else if (path === 'rosters') {
     options.rosterData = model.state.rosterData;
-    if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
-    rostersPageView.clearPageHTML();
     rostersPageView.renderRostersPage(options);
     window.history.pushState({ url: 'rosters' }, '', '/rosters');
   } else if (path === 'newsletters') {

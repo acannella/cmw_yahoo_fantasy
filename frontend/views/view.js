@@ -24,13 +24,6 @@ export default class View {
 
         handler(e.target.id);
       }
-      //Listen for rosters_loaded event, this will remove the loading spinner and render the data after the event is heard
-    });
-    window.addEventListener('rosters_loaded', function () {
-      const rostersSpinner = document.querySelector('.rosters-spinner');
-      if (rostersSpinner) {
-        handler('rosters-button');
-      }
     });
   }
 
