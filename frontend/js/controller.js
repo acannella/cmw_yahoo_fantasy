@@ -5,8 +5,6 @@ import recordBookPageView from '../views/recordBookPageView.js';
 import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
 
-let navListenersAdded = false;
-
 const controlTopScoringPlayersData = async function (week) {
   const topScoringPlayersData = await model.loadTopScoringPlayers(week);
   homePageView.renderTopScoringTable(topScoringPlayersData);
@@ -43,6 +41,8 @@ const controlCurrentWeek = async function () {
 const controlRostersData = async function () {
   await model.loadRosterData();
 };
+
+let navListenersAdded = false;
 
 /**
  * Set actionListeners when the page is first loaded and render the page specified by the path parameter
