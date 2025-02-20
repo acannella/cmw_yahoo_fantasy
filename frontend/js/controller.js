@@ -47,6 +47,10 @@ const controlRostersData = async function () {
   window.dispatchEvent(rostersLoadedEvent);
 };
 
+/**
+ * Set actionListeners when the page is first loaded and render the page specified by the path parameter
+ * @param {String} path name of the page to render
+ */
 const route = async function (path) {
   const paths = ['home', 'rosters', 'newsletters', 'recordbook', 'about'];
   const currentPath = window.location.pathname.slice(1);
