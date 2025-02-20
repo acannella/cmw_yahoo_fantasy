@@ -5,6 +5,8 @@ import recordBookPageView from '../views/recordBookPageView.js';
 import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
 
+let navListenerAdded = false;
+
 const controlTopScoringPlayersData = async function (week) {
   const topScoringPlayersData = await model.loadTopScoringPlayers(week);
   homePageView.renderTopScoringTable(topScoringPlayersData);
@@ -39,13 +41,6 @@ const controlRenderNewsletter = async function (week) {
  */
 const controlCurrentWeek = async function () {
   await model.loadCurrentWeek();
-  homePageView.initHomePage({
-    scoringHandler: controlTopScoringPlayersData,
-    transHandler: controlTransactionsData,
-    standingsHandler: controlStandingsData,
-    navHandler: controlNavigation,
-    currentWeek: model.state.currentWeek,
-  });
 };
 
 const controlRostersData = async function () {
@@ -55,6 +50,49 @@ const controlRostersData = async function () {
   window.dispatchEvent(rostersLoadedEvent);
 };
 
+const route = async function (path) {
+  const paths = ['home', 'rosters', 'newsletters', 'recordbook', 'about'];
+  const currentPath = window.location.pathname.slice(1);
+  const options = {};
+  if (!navListenerAdded) options.navHandler = controlNavigation;
+  navListenerAdded = true;
+
+  if (paths.includes(currentPath) && !path) {
+    path = currentPath;
+  }
+
+  if (!path || path === 'home') {
+    options.scoringHandler = controlTopScoringPlayersData;
+    options.transHandler = controlTransactionsData;
+    options.standingsHandler = controlStandingsData;
+    options.currentWeek = model.state.currentWeek;
+
+    homePageView.initHomePage(options);
+    window.history.pushState(null, null, '/home');
+  } else if (path === 'rosters') {
+    options.rosterData = model.state.rosterData;
+    if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
+    rostersPageView.clearPageHTML();
+    rostersPageView.displayRosters(options);
+    window.history.pushState(null, null, '/rosters');
+  } else if (path === 'newsletters') {
+    options.newslettersCount = model.state.newsletterLinksMap.size;
+    options.currNewsletter = model.state.newsletterLinksMap.get(
+      options.newslettersCount
+    );
+    options.newsletterHandler = controlRenderNewsletter;
+    newsletterPageView.renderPage(options);
+    window.history.pushState(null, null, '/newsletters');
+  } else if (path === 'recordbook') {
+    options.recordData = model.state.recordBookData;
+    recordBookPageView.displayRecords(options);
+    window.history.pushState(null, null, '/recordbook');
+  } else if (path === 'about') {
+    aboutPageView.renderAboutPage(options);
+    window.history.pushState(null, null, '/about');
+  }
+};
+
 /**
  * Render the page that corresponds with the button that was clicked
  * @param {String} buttonID ID of the button element that was clicked
@@ -62,34 +100,21 @@ const controlRostersData = async function () {
 
 const controlNavigation = function (buttonID) {
   if (buttonID.includes('home')) {
-    homePageView.initHomePage({
-      scoringHandler: controlTopScoringPlayersData,
-      transHandler: controlTransactionsData,
-      standingsHandler: controlStandingsData,
-      currentWeek: model.state.currentWeek,
-    });
+    route('home');
   }
   if (buttonID.includes('rosters')) {
-    if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
     if (model.state.rosterData) {
-      rostersPageView.clearPageHTML();
-      rostersPageView.displayRosters(model.state.rosterData);
+      route('rosters');
     }
   }
   if (buttonID.includes('newsletters')) {
-    const newslettersCount = model.state.newsletterLinksMap.size;
-    const currNewsletter = model.state.newsletterLinksMap.get(newslettersCount);
-    newsletterPageView.renderPage(
-      newslettersCount,
-      currNewsletter,
-      controlRenderNewsletter
-    );
+    route('newsletters');
   }
   if (buttonID.includes('record')) {
-    recordBookPageView.displayRecords(model.state.recordBookData);
+    route('recordbook');
   }
   if (buttonID.includes('about')) {
-    aboutPageView.renderAboutPage();
+    route('about');
   }
 };
 
@@ -97,11 +122,12 @@ const controlNavigation = function (buttonID) {
  * Call the functions to get the data from the model to pass to the views
  */
 
-const init = function () {
-  controlCurrentWeek();
-  controlRecordBookData();
-  controlNewslettersData();
-  controlRostersData();
+const init = async function () {
+  await controlCurrentWeek();
+  await controlRecordBookData();
+  await controlNewslettersData();
+  await controlRostersData();
+  await route();
 };
 
-init();
+await init();
