@@ -67,13 +67,13 @@ const route = async function (path) {
     options.standingsHandler = controlStandingsData;
     options.currentWeek = model.state.currentWeek;
 
-    homePageView.initHomePage(options);
+    homePageView.renderHomePage(options);
     window.history.pushState(null, null, '/home');
   } else if (path === 'rosters') {
     options.rosterData = model.state.rosterData;
     if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
     rostersPageView.clearPageHTML();
-    rostersPageView.displayRosters(options);
+    rostersPageView.renderRostersPage(options);
     window.history.pushState(null, null, '/rosters');
   } else if (path === 'newsletters') {
     options.newslettersCount = model.state.newsletterLinksMap.size;
@@ -81,11 +81,11 @@ const route = async function (path) {
       options.newslettersCount
     );
     options.newsletterHandler = controlRenderNewsletter;
-    newsletterPageView.renderPage(options);
+    newsletterPageView.renderNewslettersPage(options);
     window.history.pushState(null, null, '/newsletters');
   } else if (path === 'recordbook') {
     options.recordData = model.state.recordBookData;
-    recordBookPageView.displayRecords(options);
+    recordBookPageView.renderRecordbookPage(options);
     window.history.pushState(null, null, '/recordbook');
   } else if (path === 'about') {
     aboutPageView.renderAboutPage(options);

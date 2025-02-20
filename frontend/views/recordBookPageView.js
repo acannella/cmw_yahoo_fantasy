@@ -23,7 +23,7 @@ class RecordBookPageView extends View {
    * @param {Object} options Object containing JSON of record data and nav handler if it hasn't already been applied
    */
 
-  displayRecords(options) {
+  renderRecordbookPage(options) {
     if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.#generateContainers();
     const dataContainer = document.querySelector('.data-container');

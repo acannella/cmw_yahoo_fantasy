@@ -10,7 +10,7 @@ class RostersPageView extends View {
    * @param {Object} options Object containing roster data and nav handler if it hasn't already been applied
    */
 
-  displayRosters(options) {
+  renderRostersPage(options) {
     if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
     const dataContainer = document.querySelector('.page-container');

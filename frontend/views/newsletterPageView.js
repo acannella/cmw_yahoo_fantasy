@@ -23,7 +23,7 @@ class NewsletterPageView extends View {
    * @param {Object} options Object that contains the newsletterCount, currNewsletter and nav handler if it hasn't already been applied
    */
 
-  renderPage(options) {
+  renderNewslettersPage(options) {
     if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.#generateContainers();
     const dropdown = this.#generateDropdown(options.newslettersCount);

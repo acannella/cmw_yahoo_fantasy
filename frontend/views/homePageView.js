@@ -142,7 +142,7 @@ class HomePageView extends View {
    * @param {Object} options Object containing data to render the Home Page:scoringHandler, transactionsHandler, standingsHandler, currentWeek, and nav handler if it hasn't already been applied
    */
 
-  initHomePage(options) {
+  renderHomePage(options) {
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
     this.#initTables(options.currentWeek);
     this.#setPageElements();
