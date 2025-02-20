@@ -18,7 +18,7 @@ export default class View {
       ) {
         document
           .querySelector('.button-selected')
-          .classList.remove('button-selected');
+          ?.classList.remove('button-selected');
         e.target.classList.add('button-selected');
         self.clearPageHTML(self.header);
 
