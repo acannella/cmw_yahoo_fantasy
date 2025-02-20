@@ -5,7 +5,7 @@ import recordBookPageView from '../views/recordBookPageView.js';
 import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
 
-let navListenerAdded = false;
+let navListenersAdded = false;
 
 const controlTopScoringPlayersData = async function (week) {
   const topScoringPlayersData = await model.loadTopScoringPlayers(week);
@@ -36,9 +36,6 @@ const controlRenderNewsletter = async function (week) {
   );
 };
 
-/**
- * Load the current fantasy week which is needed to render the home page
- */
 const controlCurrentWeek = async function () {
   await model.loadCurrentWeek();
 };
@@ -54,8 +51,17 @@ const route = async function (path) {
   const paths = ['home', 'rosters', 'newsletters', 'recordbook', 'about'];
   const currentPath = window.location.pathname.slice(1);
   const options = {};
-  if (!navListenerAdded) options.navHandler = controlNavigation;
-  navListenerAdded = true;
+  if (!navListenersAdded) {
+    options.navHandler = controlNavigation;
+
+    window.addEventListener('popstate', (event) => {
+      if (event.state) {
+        homePageView.clearPageHTML();
+        route(event.state.url);
+      }
+    });
+    navListenersAdded = true;
+  }
 
   if (paths.includes(currentPath) && !path) {
     path = currentPath;
@@ -68,13 +74,13 @@ const route = async function (path) {
     options.currentWeek = model.state.currentWeek;
 
     homePageView.renderHomePage(options);
-    window.history.pushState(null, null, '/home');
+    window.history.pushState({ url: 'home' }, '', '/home');
   } else if (path === 'rosters') {
     options.rosterData = model.state.rosterData;
     if (!model.state.rosterData) rostersPageView.displayLoadingIcon();
     rostersPageView.clearPageHTML();
     rostersPageView.renderRostersPage(options);
-    window.history.pushState(null, null, '/rosters');
+    window.history.pushState({ url: 'rosters' }, '', '/rosters');
   } else if (path === 'newsletters') {
     options.newslettersCount = model.state.newsletterLinksMap.size;
     options.currNewsletter = model.state.newsletterLinksMap.get(
@@ -82,14 +88,14 @@ const route = async function (path) {
     );
     options.newsletterHandler = controlRenderNewsletter;
     newsletterPageView.renderNewslettersPage(options);
-    window.history.pushState(null, null, '/newsletters');
+    window.history.pushState({ url: 'newsletters' }, '', '/newsletters');
   } else if (path === 'recordbook') {
     options.recordData = model.state.recordBookData;
     recordBookPageView.renderRecordbookPage(options);
-    window.history.pushState(null, null, '/recordbook');
+    window.history.pushState({ url: 'recordbook' }, '', '/recordbook');
   } else if (path === 'about') {
     aboutPageView.renderAboutPage(options);
-    window.history.pushState(null, null, '/about');
+    window.history.pushState({ url: 'about' }, '', '/about');
   }
 };
 
