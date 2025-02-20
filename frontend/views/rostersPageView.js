@@ -7,13 +7,14 @@ class RostersPageView extends View {
 
   /**
    * Render the rosters page
-   * @param {JSON} rostersData JSON Data containing roster data for each team in the league
+   * @param {Object} options Object containing roster data and nav handler if it hasn't already been applied
    */
 
-  displayRosters(rostersData) {
+  displayRosters(options) {
+    if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.header.insertAdjacentHTML('afterend', this.generateContainers());
     const dataContainer = document.querySelector('.page-container');
-    rostersData.forEach((teamRosterObj, index) => {
+    options.rosterData.forEach((teamRosterObj, index) => {
       dataContainer.insertAdjacentHTML(
         'beforeend',
         this.#generateTeamRosterTable(teamRosterObj.teamName, index)

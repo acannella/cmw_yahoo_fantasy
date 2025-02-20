@@ -5,7 +5,12 @@ class AboutPageView extends View {
     super();
   }
 
-  renderAboutPage() {
+  /**
+   *
+   * @param {Object} options Contains nav handler if it hasn't already been applied
+   */
+  renderAboutPage(options) {
+    if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.header.insertAdjacentHTML(
       'afterend',
       `<div></div><ul><li>Top Scoring Players in a given week</li>

@@ -20,25 +20,26 @@ class NewsletterPageView extends View {
 
   /**
    * Render newsletters page with the newsletter from the most recent week
-   * @param {number} newslettersCount Number of newsletters in the database
-   * @param {String} currNewsletter String of the URL to the newsletter in Google Docs
-   * @param {function} newsletterHandler function called whenever the newsletter dropdown is changed
+   * @param {Object} options Object that contains the newsletterCount, currNewsletter and nav handler if it hasn't already been applied
    */
 
-  renderPage(newslettersCount, currNewsletter, newsletterHandler) {
+  renderPage(options) {
+    if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.#generateContainers();
-    const dropdown = this.#generateDropdown(newslettersCount);
-    const newsletterFrame = this.#generateNewsletterFrame(currNewsletter);
-    const newsletterHeader = this.#generateheader(newslettersCount);
+    const dropdown = this.#generateDropdown(options.newslettersCount);
+    const newsletterFrame = this.#generateNewsletterFrame(
+      options.currNewsletter
+    );
+    const newsletterHeader = this.#generateheader(options.newslettersCount);
     const pageContainer = document.querySelector('.page-container');
     pageContainer.insertAdjacentHTML('afterbegin', newsletterHeader);
     pageContainer
       .querySelector('.data-container')
       .insertAdjacentHTML('afterbegin', newsletterFrame + dropdown);
     const weekDropdown = document.querySelector('.week-dropdown');
-    weekDropdown.value = newslettersCount;
+    weekDropdown.value = options.newslettersCount;
     weekDropdown.addEventListener('change', function () {
-      newsletterHandler(this.value);
+      options.newsletterHandler(this.value);
     });
   }
 

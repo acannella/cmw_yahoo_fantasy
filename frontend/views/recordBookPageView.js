@@ -20,10 +20,11 @@ class RecordBookPageView extends View {
 
   /**
    * Render the league winners table
-   * @param {JSON} recordData JSON of records data
+   * @param {Object} options Object containing JSON of record data and nav handler if it hasn't already been applied
    */
 
-  displayRecords(recordData) {
+  displayRecords(options) {
+    if (options.navHandler) super.addNavigationHandler(options.navHandler);
     this.#generateContainers();
     const dataContainer = document.querySelector('.data-container');
     dataContainer.insertAdjacentHTML(
@@ -31,7 +32,7 @@ class RecordBookPageView extends View {
       this.#generateLeagueWinnersTable()
     );
     const leagueWinnersTable = document.querySelector('.league-winners-table');
-    recordData.forEach((record) => {
+    options.recordData.forEach((record) => {
       leagueWinnersTable
         .querySelector('tbody')
         .insertAdjacentHTML('beforeend', this.#generateTableRow(record));
