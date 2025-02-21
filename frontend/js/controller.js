@@ -1,6 +1,5 @@
 import homePageView from '../views/homePageView.js';
 import rostersPageView from '../views/rostersPageView.js';
-import aboutPageView from '../views/aboutPageView.js';
 import recordBookPageView from '../views/recordBookPageView.js';
 import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
@@ -49,7 +48,7 @@ let navListenersAdded = false;
  * @param {String} path name of the page to render
  */
 const route = function (path) {
-  const paths = ['home', 'rosters', 'newsletters', 'recordbook', 'about'];
+  const paths = ['home', 'rosters', 'newsletters', 'recordbook'];
   const currentPath = window.location.pathname.slice(1);
   const options = {};
   if (!navListenersAdded) {
@@ -92,9 +91,6 @@ const route = function (path) {
     options.recordData = model.state.recordBookData;
     recordBookPageView.renderRecordbookPage(options);
     window.history.pushState({ url: 'recordbook' }, '', '/recordbook');
-  } else if (path === 'about') {
-    aboutPageView.renderAboutPage(options);
-    window.history.pushState({ url: 'about' }, '', '/about');
   }
 };
 
@@ -117,9 +113,6 @@ const controlNavigation = function (buttonID) {
   }
   if (buttonID.includes('record')) {
     route('recordbook');
-  }
-  if (buttonID.includes('about')) {
-    route('about');
   }
 };
 
