@@ -51,7 +51,6 @@ exports.getTopTenScoringPlayersAndOwnership = async function (
 ) {
   try {
     const topScoringPlayersWithOwners = [];
-    const leagueMetadata = await leagueQueries.getLeagueMetadata();
     const topScoringPlayers = await getTopTenScoringPlayers(
       year,
       weekStart,
@@ -71,45 +70,44 @@ exports.getTopTenScoringPlayersAndOwnership = async function (
               .slice(0, player.name.indexOf(suffix))
               .trim();
             managerTeamKey = (
-              await prisma.nfl_players.findFirst({
+              await prisma.rosters.findFirst({
                 where: {
                   OR: [
                     {
                       player_name: player.name,
-                      league_key: leagueMetadata.leagueKey,
                     },
                     {
                       player_name: nameNoSuffix,
-                      league_key: leagueMetadata.leagueKey,
                     },
                   ],
                 },
                 select: { team_key: true },
               })
-            ).team_key;
+            )?.team_key;
             break;
           }
         }
       } else {
         managerTeamKey = (
-          await prisma.nfl_players.findFirst({
+          await prisma.rosters.findFirst({
             where: {
               player_name: player.name,
-              league_key: leagueMetadata.leagueKey,
             },
             select: { team_key: true },
           })
-        ).team_key;
+        )?.team_key;
       }
-      const managerTeamName = (
-        await prisma.fantasy_teams.findFirst({
-          where: {
-            fantasy_team_key: managerTeamKey,
-            league_key: leagueMetadata.leagueKey,
-          },
-          select: { name: true },
-        })
-      ).name;
+      const managerTeamName =
+        managerTeamKey === undefined
+          ? 'Free Agent'
+          : (
+              await prisma.fantasy_teams.findFirst({
+                where: {
+                  fantasy_team_key: managerTeamKey,
+                },
+                select: { name: true },
+              })
+            ).name;
       topScoringPlayersWithOwners.push({
         playerRank: player.rank,
         playerName: player.name,
