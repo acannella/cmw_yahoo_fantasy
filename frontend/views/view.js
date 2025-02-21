@@ -47,4 +47,11 @@ export default class View {
       if (elem) elem.previousElementSibling.remove();
     }
   }
+
+  renderError() {
+    const message =
+      'There was an error loading the page, please try again later.';
+    const errorElement = `<div class="spacer"></div><div class="page-container"><div class="error-container">${message}</div></div>`;
+    this.header.insertAdjacentHTML('afterend', errorElement);
+  }
 }

@@ -128,11 +128,15 @@ const controlNavigation = function (buttonID) {
  */
 
 const initSite = async function () {
-  await controlCurrentWeek();
-  await controlRecordBookData();
-  await controlNewslettersData();
-  await controlRostersData();
-  route();
+  try {
+    await controlCurrentWeek();
+    await controlRecordBookData();
+    await controlNewslettersData();
+    await controlRostersData();
+    route();
+  } catch (err) {
+    homePageView.renderError();
+  }
 };
 
 await initSite();
