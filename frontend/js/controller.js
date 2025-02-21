@@ -48,7 +48,7 @@ let navListenersAdded = false;
  * Set actionListeners when the page is first loaded and render the page specified by the path parameter
  * @param {String} path name of the page to render
  */
-const route = async function (path) {
+const route = function (path) {
   const paths = ['home', 'rosters', 'newsletters', 'recordbook', 'about'];
   const currentPath = window.location.pathname.slice(1);
   const options = {};
@@ -127,12 +127,12 @@ const controlNavigation = function (buttonID) {
  * Call the functions to get the data from the model to pass to the views
  */
 
-const init = async function () {
+const initSite = async function () {
   await controlCurrentWeek();
   await controlRecordBookData();
   await controlNewslettersData();
   await controlRostersData();
-  await route();
+  route();
 };
 
-await init();
+await initSite();
