@@ -86,7 +86,8 @@ exports.getLeagueStandings = async function (week) {
 
 exports.getRecordBook = async function () {
   try {
-    return await prisma.record_book.findMany({
+    const leagueWinners = await prisma.record_book.findMany({
+      where: { record_name: 'League Winner' },
       select: {
         record_name: true,
         team_name: true,
@@ -94,6 +95,17 @@ exports.getRecordBook = async function () {
         record_data: true,
       },
     });
+
+    const otherRecords = await prisma.record_book.findMany({
+      where: { NOT: { record_name: 'League Winner' } },
+      select: {
+        record_name: true,
+        team_name: true,
+        year: true,
+        record_data: true,
+      },
+    });
+    return { leagueWinners, otherRecords };
   } catch (err) {
     return console.log(err);
   }
