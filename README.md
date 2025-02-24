@@ -12,6 +12,8 @@ I figured I could take this a step further and build out a website that displays
 - Past and present newsletters
 - Previous league winners
 
+**URL:** https://cmw-fantasy.netlify.app/
+
 ## How It's Made:
 
 **Tech used:** HTML, CSS, JavaScript, Express, PostgreSQL, Prisma
