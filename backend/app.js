@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
-app.use('/', fantasyRouter);
+app.use('/api/v1', fantasyRouter);
 
 const port = 3000;
 
