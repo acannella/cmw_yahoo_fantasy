@@ -14,6 +14,6 @@ router.get(
 router.get(`/standings`, leagueMiddleware.getCurrentStandings);
 router.get(`/recordbook`, leagueMiddleware.getRecordBook);
 router.get(`/newsletters`, leagueMiddleware.getNewsletters);
-router.get(`/metadata`, leagueMiddleware.getCurrentWeek);
+router.get(`/metadata`, leagueMiddleware.getMetadata);
 
 module.exports = router;

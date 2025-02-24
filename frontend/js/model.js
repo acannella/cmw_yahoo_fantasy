@@ -23,7 +23,7 @@ export const loadTopScoringPlayers = async function (week) {
 export const loadTransactionsByWeek = async function (week) {
   if (!state.transactionsMap.has(week)) {
     const transactionsCall = await fetch(
-      `${API_URL}/transactions?week=${week}`
+      `${API_URL}/transactions?week=${week}&leagueKey=${state.metadata.leagueKey}`
     );
 
     const transactionsData = await transactionsCall.json();
@@ -36,7 +36,9 @@ export const loadTransactionsByWeek = async function (week) {
 
 export const loadStandingsData = async function (week) {
   if (!state.standingsMap.has(week)) {
-    const standingsCall = await fetch(`${API_URL}/standings?week=${week}`);
+    const standingsCall = await fetch(
+      `${API_URL}/standings?week=${week}&leagueKey=${state.metadata.leagueKey}`
+    );
     const standingsData = await standingsCall.json();
     state.standingsMap.set(week, standingsData);
     return state.standingsMap.get(week);
@@ -76,7 +78,7 @@ export const loadNewsletterData = async function () {
   }
 };
 
-export const loadCurrentWeek = async function () {
-  const currentWeekCall = await fetch(`${API_URL}/metadata`);
-  state.currentWeek = (await currentWeekCall.json()).currentWeek;
+export const loadMetadata = async function () {
+  const metadata = await fetch(`${API_URL}/metadata`);
+  state.metadata = await metadata.json();
 };

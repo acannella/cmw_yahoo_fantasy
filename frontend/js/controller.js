@@ -33,8 +33,8 @@ const controlRenderNewsletter = async function (week) {
   );
 };
 
-const controlCurrentWeek = async function () {
-  await model.loadCurrentWeek();
+const controlMetadata = async function () {
+  await model.loadMetadata();
 };
 
 const controlRostersData = async function () {
@@ -71,7 +71,7 @@ const route = function (path) {
     options.scoringHandler = controlTopScoringPlayersData;
     options.transHandler = controlTransactionsData;
     options.standingsHandler = controlStandingsData;
-    options.currentWeek = model.state.currentWeek;
+    options.currentWeek = model.state.metadata.currentWeek;
 
     homePageView.renderHomePage(options);
     window.history.pushState({ url: 'home' }, '', '/home');
@@ -122,7 +122,7 @@ const controlNavigation = function (buttonID) {
 
 const initSite = async function () {
   try {
-    await controlCurrentWeek();
+    await controlMetadata();
     await controlRecordBookData();
     await controlNewslettersData();
     await controlRostersData();

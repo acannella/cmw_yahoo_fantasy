@@ -34,10 +34,9 @@ exports.getLeagueMetadata = async function () {
  * @returns {Promise<JSON[]>} Array of JSON objects containing standing data for each team in league
  */
 
-exports.getLeagueStandings = async function (week) {
+exports.getLeagueStandings = async function (week, leagueKey) {
   try {
     const leagueStandings = [];
-    const { leagueKey } = await this.getLeagueMetadata();
     const leagueStandingsData = await prisma.league_standings.findMany({
       where: { league_key: leagueKey, week: week },
       select: {
