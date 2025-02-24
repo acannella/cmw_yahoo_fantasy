@@ -52,24 +52,21 @@ exports.getTransactionsForWeek = async function (week) {
  */
 const formatTransaction = async function (transactionArray) {
   const formattedTransactionsArray = [];
+  const fantasyTeams = new Map();
+  const fantasyTeamsData = await prisma.fantasy_teams.findMany({
+    select: { fantasy_team_key: true, name: true },
+  });
+  fantasyTeamsData.forEach((team) => {
+    fantasyTeams.set(team.fantasy_team_key, team.name);
+  });
   for (const transaction of transactionArray) {
-    const playerName = (
-      await prisma.nfl_players.findFirst({
-        where: { player_key: transaction.player_key },
-        select: { player_name: true },
-      })
-    ).player_name;
+    const playerName = transaction.player_name;
     const action = transaction.action;
     //Set teamkey to either the destination_team_key or source_team_key depending on what's on the transaction
     const teamKey = transaction.destination_team_key
       ? transaction.destination_team_key
       : transaction.source_team_key;
-    const teamName = (
-      await prisma.fantasy_teams.findFirst({
-        where: { fantasy_team_key: teamKey },
-        select: { name: true },
-      })
-    ).name;
+    const teamName = fantasyTeams.get(teamKey);
     const formattedTransaction = {
       teamName,
       action,

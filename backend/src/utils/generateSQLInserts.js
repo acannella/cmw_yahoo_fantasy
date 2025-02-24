@@ -1,10 +1,9 @@
-const { match } = require('assert');
 const fs = require('fs');
 const path = require('path');
 
 const pathToJSON = path.join(
   __dirname,
-  '../yahoo_fantasy_data_exports/yahoo_api_exports/'
+  '../../yahoo_fantasy_data_exports/yahoo_api_exports/'
 );
 
 const pathToWrite = path.join(__dirname, '../db_scripts/insert_scripts/');
@@ -161,7 +160,7 @@ const generateTransactionsInsertStatements = function () {
       +transactionObject.timestamp * 1000
     ).toISOString();
     transactionObject.players_in_transaction.forEach((player) => {
-      const playerKey = player.player_key;
+      const playerName = player.player_name.replaceAll(`'`, `''`);
       const action = player.action;
       const sourceType = player.source_type;
       const sourceTeamKey = player.source_team_key;
@@ -171,7 +170,7 @@ const generateTransactionsInsertStatements = function () {
           : player.destination_type;
       const destinationTeamKey = player.destination_team_key;
       const playerInTransaction = {
-        player_key: playerKey,
+        player_name: playerName,
         action: action,
         source_type: sourceType,
         source_team_key: sourceTeamKey,
@@ -194,5 +193,5 @@ const generateTransactionsInsertStatements = function () {
 // generateFantasyStandingsInsertStatements();
 // generateFantasyMatchupsInsertStatements();
 // generateNflPlayersInsertStatements();
-// generateTransactionsInsertStatements();
-generateFantasyStandingsFromMatchupsInsertStatements();
+generateTransactionsInsertStatements();
+// generateFantasyStandingsFromMatchupsInsertStatements();
