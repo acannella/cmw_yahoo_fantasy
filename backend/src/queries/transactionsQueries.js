@@ -35,7 +35,7 @@ exports.getTransactionsForWeek = async function (week) {
   });
   const parsedTransactions = [];
   for (const transaction of transactions) {
-    const formattedTransactions = await formatTransaction(
+    const formattedTransactions = formatTransaction(
       transaction.players_in_transaction,
       fantasyTeams
     );
@@ -54,7 +54,7 @@ exports.getTransactionsForWeek = async function (week) {
  * @param {Map} fantasyTeams Map of the fantasy teamKeys and their corresponding names
  * @returns {Promise<JSON[]>} Array of JSON objects with desired transaction data
  */
-const formatTransaction = async function (transactionArray, fantasyTeams) {
+const formatTransaction = function (transactionArray, fantasyTeams) {
   const formattedTransactionsArray = [];
   for (const transaction of transactionArray) {
     const playerName = transaction.player_name;
