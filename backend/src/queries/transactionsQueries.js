@@ -11,6 +11,13 @@ const prisma = new PrismaClient();
  */
 exports.getTransactionsForWeek = async function (week) {
   const leagueMetadata = await leagueQueries.getLeagueMetadata();
+  const fantasyTeams = new Map();
+  const fantasyTeamsData = await prisma.fantasy_teams.findMany({
+    select: { fantasy_team_key: true, name: true },
+  });
+  fantasyTeamsData.forEach((team) => {
+    fantasyTeams.set(team.fantasy_team_key, team.name);
+  });
   //Get the week_start and week_end values from the DB based on supplied week
   const gameWeek = await prisma.fantasy_weeks.findFirst({
     where: { league_key: leagueMetadata.league_key, week_number: week },
@@ -34,7 +41,8 @@ exports.getTransactionsForWeek = async function (week) {
   const parsedTransactions = [];
   for (const transaction of transactions) {
     const formattedTransactions = await formatTransaction(
-      transaction.players_in_transaction
+      transaction.players_in_transaction,
+      fantasyTeams
     );
     //Use toLocaleString to save the date as something more human readable
     parsedTransactions.push({
@@ -48,17 +56,11 @@ exports.getTransactionsForWeek = async function (week) {
 /**
  * Format the data from the players in transaction array so it can be used by the views
  * @param {JSON[]} transactionArray Array that contains JSON objects with transaction data
+ * @param {Map} fantasyTeams Map of the fantasy teamKeys and their corresponding names
  * @returns {Promise<JSON[]>} Array of JSON objects with desired transaction data
  */
-const formatTransaction = async function (transactionArray) {
+const formatTransaction = async function (transactionArray, fantasyTeams) {
   const formattedTransactionsArray = [];
-  const fantasyTeams = new Map();
-  const fantasyTeamsData = await prisma.fantasy_teams.findMany({
-    select: { fantasy_team_key: true, name: true },
-  });
-  fantasyTeamsData.forEach((team) => {
-    fantasyTeams.set(team.fantasy_team_key, team.name);
-  });
   for (const transaction of transactionArray) {
     const playerName = transaction.player_name;
     const action = transaction.action;
