@@ -10,9 +10,8 @@ export const state = {
 export const loadTopScoringPlayers = async function (week) {
   if (!state.topScoringMap.has(week)) {
     const topScoringCall = await fetch(
-      `${API_URL}/topscoringplayers?year=2024&weekStart=${week}&weekEnd=${week}`
+      `${API_URL}/topscoringplayers?week=${week}`
     );
-
     const topScoringPlayersData = await topScoringCall.json();
     state.topScoringMap.set(week, topScoringPlayersData);
     return state.topScoringMap.get(week);

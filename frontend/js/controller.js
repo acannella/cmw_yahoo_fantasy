@@ -5,7 +5,7 @@ import newsletterPageView from '../views/newsletterPageView.js';
 import * as model from './model.js';
 
 const controlTopScoringPlayersData = async function (week) {
-  const topScoringPlayersData = await model.loadTopScoringPlayers(week);
+  const topScoringPlayersData = await model.loadTopScoringPlayers(+week);
   homePageView.renderTopScoringTable(topScoringPlayersData);
 };
 

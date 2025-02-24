@@ -178,10 +178,10 @@ class HomePageView extends View {
   renderTopScoringTable(playerData) {
     playerData.forEach((player) => {
       const row = this.#generateTableRow([
-        player.playerRank,
-        player.playerName,
+        player.rank,
+        player.player_name,
         player.points,
-        player.managerTeamName,
+        player.manager,
       ]);
       this.topScoringTableBody.insertAdjacentHTML('beforeend', row);
     });
