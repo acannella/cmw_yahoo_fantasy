@@ -22,15 +22,7 @@ exports.getLeagueMetadata = async function () {
     const leagueKey = leagueData.league_key;
     const currentWeek = leagueData.current_week;
 
-    const teamKeys = (
-      await prisma.fantasy_teams.findMany({
-        where: { league_key: leagueKey },
-        where: { fantasy_team_key: { not: 'FA' } },
-        select: { fantasy_team_key: true },
-      })
-    ).map((teamKeyObj) => teamKeyObj.fantasy_team_key);
-
-    return { gameKey, leagueKey, currentWeek, teamKeys };
+    return { gameKey, leagueKey, currentWeek };
   } catch (err) {
     return console.log(err);
   }
