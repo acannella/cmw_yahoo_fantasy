@@ -132,3 +132,12 @@ model rosters {
   bye_week        Int?    @db.Integer
   display_number  Int?    @db.Integer
 }
+
+model top_scoring_players {
+  id          Int     @id(map: "top_scoring_players_pk") @default(autoincrement())
+  rank        Int     @db.Integer
+  player_name String  @db.VarChar
+  points      Decimal @db.Decimal(6, 2)
+  manager     String  @db.VarChar
+  week        Int     @db.Integer
+}
