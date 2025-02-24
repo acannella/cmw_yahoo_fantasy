@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const getTopTenScoringPlayers = require('../utils/weeklyTopScoringPlayers');
 const leagueQueries = require('./leagueQueries');
+const fantasyTeamNamesMap = require('../utils/fantasyTeamNamesMap');
 
 const prisma = new PrismaClient();
 
@@ -13,13 +14,7 @@ exports.getRosters = async function () {
   const leagueRosters = [];
   try {
     const { teamKeys } = await leagueQueries.getLeagueMetadata();
-    const fantasyTeams = new Map();
-    const fantasyTeamsData = await prisma.fantasy_teams.findMany({
-      select: { fantasy_team_key: true, name: true },
-    });
-    fantasyTeamsData.forEach((team) => {
-      fantasyTeams.set(team.fantasy_team_key, team.name);
-    });
+    const fantasyTeams = await fantasyTeamNamesMap();
     for (const teamKey of teamKeys) {
       const teamName = fantasyTeams.get(teamKey);
       const teamRoster = await prisma.rosters.findMany({
@@ -53,6 +48,7 @@ exports.getTopTenScoringPlayersAndOwnership = async function (
 ) {
   try {
     const topScoringPlayersWithOwners = [];
+    const fantasyTeams = await fantasyTeamNamesMap();
     const topScoringPlayers = await getTopTenScoringPlayers(
       year,
       weekStart,
@@ -102,14 +98,7 @@ exports.getTopTenScoringPlayersAndOwnership = async function (
       const managerTeamName =
         managerTeamKey === undefined
           ? 'Free Agent'
-          : (
-              await prisma.fantasy_teams.findFirst({
-                where: {
-                  fantasy_team_key: managerTeamKey,
-                },
-                select: { name: true },
-              })
-            ).name;
+          : fantasyTeams.get(managerTeamKey);
       topScoringPlayersWithOwners.push({
         playerRank: player.rank,
         playerName: player.name,
