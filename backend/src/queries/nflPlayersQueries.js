@@ -13,13 +13,15 @@ exports.getRosters = async function () {
   const leagueRosters = [];
   try {
     const { teamKeys } = await leagueQueries.getLeagueMetadata();
+    const fantasyTeams = new Map();
+    const fantasyTeamsData = await prisma.fantasy_teams.findMany({
+      select: { fantasy_team_key: true, name: true },
+    });
+    fantasyTeamsData.forEach((team) => {
+      fantasyTeams.set(team.fantasy_team_key, team.name);
+    });
     for (const teamKey of teamKeys) {
-      const teamName = (
-        await prisma.fantasy_teams.findFirst({
-          where: { fantasy_team_key: teamKey },
-          select: { name: true },
-        })
-      ).name;
+      const teamName = fantasyTeams.get(teamKey);
       const teamRoster = await prisma.rosters.findMany({
         where: { team_key: teamKey, NOT: { player_name: null } },
         select: {
