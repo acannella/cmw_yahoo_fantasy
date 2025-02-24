@@ -6,12 +6,8 @@ exports.getTeamRosters = async function (req, res) {
 };
 
 exports.getTopScoringPlayersByWeek = async function (req, res) {
-  const { year, weekStart, weekEnd } = req.query;
+  const week = +req.query.week;
   const topPlayers =
-    await nflPlayersQueries.getTopTenScoringPlayersAndOwnership(
-      year,
-      weekStart,
-      weekEnd
-    );
+    await nflPlayersQueries.getTopTenScoringPlayersAndOwnership(week);
   res.status(200).send(topPlayers);
 };

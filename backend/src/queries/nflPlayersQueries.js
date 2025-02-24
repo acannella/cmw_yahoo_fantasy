@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-const getTopTenScoringPlayers = require('../utils/weeklyTopScoringPlayers');
 const fantasyTeamNamesMap = require('../utils/fantasyTeamNamesMap');
 
 const prisma = new PrismaClient();
@@ -43,77 +42,16 @@ exports.getRosters = async function () {
 };
 /**
  * Get Array of JSON objects that contain data for top scoring players for a given year and weeks
- * @param {number} year - Four digit year that you want to get the data for
- * @param {number} weekStart - First week you want to pull data for
- * @param {number} weekEnd - Last week you want to pull data for
+ * @param {number} week - Week to get top scoring data for
  * @returns {Promise<JSON[]>} Array of objects containing playerRank,playerName,points scored, and manager name for the supplied year and weeks
  */
-exports.getTopTenScoringPlayersAndOwnership = async function (
-  year,
-  weekStart,
-  weekEnd
-) {
+exports.getTopTenScoringPlayersAndOwnership = async function (week) {
   try {
-    const topScoringPlayersWithOwners = [];
-    const fantasyTeams = await fantasyTeamNamesMap();
-    const topScoringPlayers = await getTopTenScoringPlayers(
-      year,
-      weekStart,
-      weekEnd
-    );
-    for (const player of topScoringPlayers) {
-      const suffixes = ['Jr.', 'Sr.', 'II'];
-      let managerTeamKey;
-      /*
-      If a player has a suffix in their name in fantasy pros, there's a chance the name doesn't have a suffix in yahoo.
-      In that scenario, we try to SELECT on the name with the suffix and wihout
-      */
-      if (suffixes.some((suffix) => player.name.includes(suffix))) {
-        for (const suffix of suffixes) {
-          if (player.name.includes(suffix)) {
-            const nameNoSuffix = player.name
-              .slice(0, player.name.indexOf(suffix))
-              .trim();
-            managerTeamKey = (
-              await prisma.rosters.findFirst({
-                where: {
-                  OR: [
-                    {
-                      player_name: player.name,
-                    },
-                    {
-                      player_name: nameNoSuffix,
-                    },
-                  ],
-                },
-                select: { team_key: true },
-              })
-            )?.team_key;
-            break;
-          }
-        }
-      } else {
-        managerTeamKey = (
-          await prisma.rosters.findFirst({
-            where: {
-              player_name: player.name,
-            },
-            select: { team_key: true },
-          })
-        )?.team_key;
-      }
-      const managerTeamName =
-        managerTeamKey === undefined
-          ? 'Free Agent'
-          : fantasyTeams.get(managerTeamKey);
-      topScoringPlayersWithOwners.push({
-        playerRank: player.rank,
-        playerName: player.name,
-        points: player.points,
-        managerTeamName,
-      });
-    }
-    return topScoringPlayersWithOwners;
+    return await prisma.top_scoring_players.findMany({
+      where: { week: week },
+      select: { rank: true, player_name: true, points: true, manager: true },
+      orderBy: { rank: 'asc' },
+    });
   } catch (err) {
     return console.log(err);
   }
