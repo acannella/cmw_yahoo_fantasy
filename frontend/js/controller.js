@@ -122,10 +122,12 @@ const controlNavigation = function (buttonID) {
 
 const initSite = async function () {
   try {
+    homePageView.displayLoadingIcon();
     await controlMetadata();
     await controlRecordBookData();
     await controlNewslettersData();
     await controlRostersData();
+    homePageView.clearPageHTML();
     route();
   } catch (err) {
     homePageView.renderError();

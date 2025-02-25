@@ -64,17 +64,6 @@ class RostersPageView extends View {
   #generateTableRow(data) {
     return `<tr><td>${data.roster_position}</td><td>${data.player_name}</td><td>${data.nfl_team}</td><td>${data.bye_week}</td></tr>`;
   }
-
-  /**
-   * Add the loading icon to the rosters page
-   */
-
-  displayLoadingIcon() {
-    const iconHTML = `<div class="rosters-spinner"><h3 class="loading-message">Loading Rosters...</h3>
-                <img src="../img/loading.png" alt="test" class="loading-icon"></img>
-              </div>`;
-    this.header.insertAdjacentHTML('afterend', iconHTML);
-  }
 }
 
 export default new RostersPageView();

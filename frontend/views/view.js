@@ -54,4 +54,11 @@ export default class View {
     const errorElement = `<div class="spacer"></div><div class="page-container"><div class="error-container">${message}</div></div>`;
     this.header.insertAdjacentHTML('afterend', errorElement);
   }
+
+  displayLoadingIcon() {
+    const iconHTML = `<div class="rosters-spinner"><h3 class="loading-message">Loading Rosters...</h3>
+                <img src="../img/loading.png" alt="test" class="loading-icon"></img>
+              </div>`;
+    this.header.insertAdjacentHTML('afterend', iconHTML);
+  }
 }
