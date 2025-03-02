@@ -3,7 +3,7 @@ body {
 }
 
 h1 {
-  font-size: 55px;
+  font-size: 3.5rem;
   text-align: center;
   font-family: 'Roboto', serif;
   font-optical-sizing: auto;
@@ -14,17 +14,17 @@ h1 {
 
 header {
   justify-content: space-between;
-  gap: 20px;
-  padding: 5px;
+  gap: 1rem;
+  padding: 0.5rem;
   background-color: #1b98e0;
-  border: 2px solid black;
+  border: 0.15rem solid black;
 }
 
 .primary-navigation ul {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  gap: 20px;
+  gap: 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -32,8 +32,8 @@ header {
 
 .primary-navigation button {
   font-family: 'Roboto', serif;
-  font-size: 25px;
-  height: 50px;
+  font-size: 1.5rem;
+  height: 3rem;
   color: black;
   font-weight: bold;
   text-decoration: none;
@@ -44,17 +44,17 @@ header {
 
 .primary-navigation button:hover {
   background-color: #1a88c7;
-  border-radius: 10px;
+  border-radius: 1rem;
 }
 
 table {
-  min-inline-size: 1000px;
-  max-inline-size: 1100px;
+  min-inline-size: 60rem;
+  max-inline-size: 60rem;
 }
 
 h3 {
   position: relative;
-  top: -15px;
+  top: -1rem;
   font-family: 'Roboto', serif;
 }
 
@@ -121,12 +121,12 @@ h3 {
 
 .newsletter-header {
   background-color: #006494;
-  width: 800px;
-  height: 91px;
+  width: 50rem;
+  height: 5.63rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid black;
+  border: 0.18rem solid black;
   margin-right: 6rem;
 }
 
@@ -135,9 +135,9 @@ h3 {
 }
 
 iframe {
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  border-bottom: 2px solid black;
+  border-left: 0.18rem solid black;
+  border-right: 0.18rem solid black;
+  border-bottom: 0.18rem solid black;
 }
 
 .spacer {
@@ -148,7 +148,7 @@ table,
 th,
 td {
   font-family: 'Roboto', serif;
-  border: 2px solid black;
+  border: 0.15rem solid black;
   margin-left: auto;
   margin-right: auto;
   border-collapse: collapse;
@@ -162,17 +162,17 @@ td {
 }
 
 th {
-  font-size: 25px;
+  font-size: 1.5rem;
   padding: 1rem;
 }
 
 td {
-  font-size: 20px;
+  font-size: 1.25rem;
   padding: 1rem;
 }
 
 h2 {
-  font-size: 45px;
+  font-size: 2.75rem;
   text-align: center;
   font-family: 'Roboto', serif;
   margin-top: auto;
@@ -180,45 +180,41 @@ h2 {
 }
 
 .plus-sign {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
 }
 
 .minus-sign {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
 }
 
 .trade-arrows {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
 }
 .no-change {
-  width: 25px;
-  height: 25px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
-  left: 20px;
+  left: 1rem;
 }
 
 .up-arrow {
-  width: 30px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
+  top: 0.1rem;
 }
 
 .down-arrow {
-  width: 30px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
-  top: 2px;
+  top: 0.1rem;
 }
 
 .error-container {
