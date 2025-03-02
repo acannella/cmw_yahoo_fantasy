@@ -107,6 +107,7 @@ h3 {
 
 .data-container {
   display: flex;
+  overflow-x: auto;
 }
 
 .dropdown-container {
