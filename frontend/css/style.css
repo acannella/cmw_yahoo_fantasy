@@ -314,6 +314,7 @@ h2 {
     font-family: 'Roboto', serif;
     margin-top: auto;
     margin-bottom: auto;
+    margin-left: 1rem;
   }
 
   .newsletter-header {
@@ -324,6 +325,13 @@ h2 {
     align-items: left;
     justify-content: left;
     border: 0.18rem solid black;
+    margin-top: 4rem;
+  }
+
+  .newsletter-dropdown-container {
+    position: relative;
+    left: -0.2rem;
+    bottom: 60rem;
   }
 
   iframe {
