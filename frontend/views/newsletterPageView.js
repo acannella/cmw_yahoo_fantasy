@@ -70,8 +70,7 @@ class NewsletterPageView extends View {
    */
 
   #generateNewsletterFrame(newsletter) {
-    return `<iframe src="${newsletter}" width="800" height="750" marginwidth="0"
- marginheight="0"></iframe>`;
+    return `<iframe src="${newsletter}" marginwidth="0" marginheight="0"></iframe>`;
   }
 
   /**
