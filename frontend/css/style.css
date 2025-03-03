@@ -175,8 +175,8 @@ th {
 }
 
 td {
-  font-size: 0.75rem;
-  padding: 0.5rem;
+  font-size: 1.25rem;
+  padding: 1rem;
 }
 
 h2 {
@@ -188,14 +188,14 @@ h2 {
 }
 
 .plus-sign {
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
 }
 
 .minus-sign {
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 1.25rem;
+  height: 1.25rem;
   position: relative;
 }
 
@@ -302,10 +302,48 @@ h2 {
   }
 
   td {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
   table {
     min-inline-size: 15rem;
+  }
+
+  .plus-sign {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+  }
+
+  .minus-sign {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+  }
+
+  .trade-arrows {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+  }
+  .no-change {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+    left: 1rem;
+  }
+
+  .up-arrow {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+    top: 0.1rem;
+  }
+
+  .down-arrow {
+    width: 0.75rem;
+    height: 0.75rem;
+    position: relative;
+    top: 0.1rem;
   }
 
   h2 {
