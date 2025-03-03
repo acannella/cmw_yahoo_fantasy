@@ -127,11 +127,16 @@ h3 {
   align-items: center;
   justify-content: center;
   border: 0.18rem solid black;
-  margin-right: 6rem;
 }
 
 .dropdown-week-header {
   margin: auto;
+}
+
+.newsletter-dropdown-container {
+  position: relative;
+  bottom: 47rem;
+  left: 29rem;
 }
 
 iframe {

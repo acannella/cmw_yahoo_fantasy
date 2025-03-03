@@ -14,7 +14,7 @@ class NewsletterPageView extends View {
     const pageContainer = document.querySelector('.page-container');
     pageContainer.insertAdjacentHTML(
       'afterbegin',
-      `<div class="data-container"></div>`
+      `<div class="newsletter-dropdown-container"></div>`
     );
   }
 
@@ -32,10 +32,13 @@ class NewsletterPageView extends View {
     );
     const newsletterHeader = this.#generateheader(options.newslettersCount);
     const pageContainer = document.querySelector('.page-container');
-    pageContainer.insertAdjacentHTML('afterbegin', newsletterHeader);
+    pageContainer.insertAdjacentHTML(
+      'afterbegin',
+      newsletterHeader + newsletterFrame
+    );
     pageContainer
-      .querySelector('.data-container')
-      .insertAdjacentHTML('afterbegin', newsletterFrame + dropdown);
+      .querySelector('.newsletter-dropdown-container')
+      .insertAdjacentHTML('afterbegin', dropdown);
     const weekDropdown = document.querySelector('.week-dropdown');
     weekDropdown.value = options.newslettersCount;
     weekDropdown.addEventListener('change', function () {
@@ -86,14 +89,16 @@ class NewsletterPageView extends View {
    */
 
   #clearNewsletter() {
-    let elem = document.querySelector('.data-container');
+    let elem = document.querySelector('.page-container');
     while (
       elem.hasChildNodes() &&
-      !elem.firstElementChild.classList.contains('dropdown-container')
+      !elem.firstElementChild.classList.contains(
+        'newsletter-dropdown-container'
+      )
     ) {
       elem.firstElementChild.remove();
     }
-    document.querySelector('.newsletter-header').remove();
+    // document.querySelector('.newsletter-header').remove();
   }
 
   /**
@@ -108,10 +113,10 @@ class NewsletterPageView extends View {
     const newsletterFrame = this.#generateNewsletterFrame(newsletter);
 
     this.#clearNewsletter();
-    pageContainer.insertAdjacentHTML('afterbegin', newsletterHeader);
-    pageContainer
-      .querySelector('.data-container')
-      .insertAdjacentHTML('afterbegin', newsletterFrame);
+    pageContainer.insertAdjacentHTML(
+      'afterbegin',
+      newsletterHeader + newsletterFrame
+    );
   }
 }
 
