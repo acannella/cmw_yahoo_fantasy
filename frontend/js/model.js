@@ -81,4 +81,5 @@ export const loadNewsletterData = async function () {
 export const loadMetadata = async function () {
   const metadata = await fetch(`${API_URL}/metadata`);
   state.metadata = await metadata.json();
+  console.log(state.metadata);
 };
