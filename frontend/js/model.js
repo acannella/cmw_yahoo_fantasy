@@ -23,7 +23,7 @@ export const loadTopScoringPlayers = async function (week) {
 export const loadTransactionsByWeek = async function (week) {
   if (!state.transactionsMap.has(week)) {
     const transactionsCall = await fetch(
-      `${API_URL}/transactions?week=${week}&leagueKey=${state.metadata.leagueKey}`
+      `${API_URL}/transactions?week=${week}&leagueKey=${state.metadata.leagueKey}&teams=${state.metadata.fantasyTeamsEncoded}`
     );
 
     const transactionsData = await transactionsCall.json();
@@ -59,7 +59,9 @@ export const loadRecordBookData = async function () {
 
 export const loadRosterData = async function () {
   if (!state.rosterData) {
-    const rostersCall = await fetch(`${API_URL}/rosters`);
+    const rostersCall = await fetch(
+      `${API_URL}/rosters?teams=${state.metadata.fantasyTeamsEncoded}`
+    );
     state.rosterData = await rostersCall.json();
     return state.rosterData;
   } else {
@@ -81,5 +83,7 @@ export const loadNewsletterData = async function () {
 export const loadMetadata = async function () {
   const metadata = await fetch(`${API_URL}/metadata`);
   state.metadata = await metadata.json();
-  console.log(state.metadata);
+  state.metadata.fantasyTeamsEncoded = encodeURIComponent(
+    state.metadata.fantasyTeamsJSON
+  );
 };
