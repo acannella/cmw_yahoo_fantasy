@@ -1,7 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const leagueQueries = require('./leagueQueries');
 const formattedDateFromDB = require('../utils/formattedDateFromDB');
-const fantasyTeamNamesMap = require('../utils/fantasyTeamNamesMap');
 
 const prisma = new PrismaClient();
 
@@ -10,8 +8,8 @@ const prisma = new PrismaClient();
  * @param {number} week Week you want to get transactions for
  * @returns {Promise<JSON[]>} Array of JSON objects with formatted transactions
  */
-exports.getTransactionsForWeek = async function (week, leagueKey) {
-  const fantasyTeams = await fantasyTeamNamesMap();
+exports.getTransactionsForWeek = async function (week, leagueKey, teams) {
+  const fantasyTeams = teams;
   //Get the week_start and week_end values from the DB based on supplied week
   const gameWeek = await prisma.fantasy_weeks.findFirst({
     where: { league_key: leagueKey, week_number: week },

@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-const fantasyTeamNamesMap = require('../utils/fantasyTeamNamesMap');
 
 const prisma = new PrismaClient();
 
@@ -8,10 +7,10 @@ const prisma = new PrismaClient();
  * @returns {Promise<JSON[]>} Array of JSON Objects which contain roster data for each team
  */
 
-exports.getRosters = async function () {
+exports.getRosters = async function (teams) {
   try {
     const leagueRosters = [];
-    const fantasyTeams = await fantasyTeamNamesMap();
+    const fantasyTeams = teams;
     const leagueRosterMap = new Map();
     for (const teamKey of fantasyTeams.keys()) {
       leagueRosterMap.set(teamKey, []);
