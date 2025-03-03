@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const fantasyTeamNamesMap = require('../utils/fantasyTeamNamesMap');
 
 const prisma = new PrismaClient();
 
@@ -21,8 +22,11 @@ exports.getLeagueMetadata = async function () {
 
     const leagueKey = leagueData.league_key;
     const currentWeek = leagueData.current_week;
+    const fantasyTeamsJSON = JSON.stringify(
+      Object.fromEntries(await fantasyTeamNamesMap())
+    );
 
-    return { gameKey, leagueKey, currentWeek };
+    return { gameKey, leagueKey, currentWeek, fantasyTeamsJSON };
   } catch (err) {
     return console.log(err);
   }

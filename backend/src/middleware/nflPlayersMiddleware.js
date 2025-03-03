@@ -1,7 +1,10 @@
 const nflPlayersQueries = require('../queries/nflPlayersQueries');
 
 exports.getTeamRosters = async function (req, res) {
-  const rosters = await nflPlayersQueries.getRosters();
+  const teams = new Map(
+    Object.entries(JSON.parse(decodeURIComponent(req.query.teams)))
+  );
+  const rosters = await nflPlayersQueries.getRosters(teams);
   res.status(200).send(rosters);
 };
 
