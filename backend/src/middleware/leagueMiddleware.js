@@ -3,7 +3,14 @@ const leagueQueries = require('../queries/leagueQueries');
 exports.getCurrentStandings = async function (req, res) {
   const week = +req.query.week;
   const leagueKey = req.query.leagueKey;
-  const standings = await leagueQueries.getLeagueStandings(week, leagueKey);
+  const teams = new Map(
+    Object.entries(JSON.parse(decodeURIComponent(req.query.teams)))
+  );
+  const standings = await leagueQueries.getLeagueStandings(
+    week,
+    leagueKey,
+    teams
+  );
   res.status(200).send(standings);
 };
 

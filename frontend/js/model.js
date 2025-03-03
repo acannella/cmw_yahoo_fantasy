@@ -37,7 +37,7 @@ export const loadTransactionsByWeek = async function (week) {
 export const loadStandingsData = async function (week) {
   if (!state.standingsMap.has(week)) {
     const standingsCall = await fetch(
-      `${API_URL}/standings?week=${week}&leagueKey=${state.metadata.leagueKey}`
+      `${API_URL}/standings?week=${week}&leagueKey=${state.metadata.leagueKey}&teams=${state.metadata.fantasyTeamsEncoded}`
     );
     const standingsData = await standingsCall.json();
     state.standingsMap.set(week, standingsData);

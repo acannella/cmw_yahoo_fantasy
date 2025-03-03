@@ -38,9 +38,10 @@ exports.getLeagueMetadata = async function () {
  * @returns {Promise<JSON[]>} Array of JSON objects containing standing data for each team in league
  */
 
-exports.getLeagueStandings = async function (week, leagueKey) {
+exports.getLeagueStandings = async function (week, leagueKey, teams) {
   try {
     const leagueStandings = [];
+    const fantasyTeams = teams;
     const leagueStandingsData = await prisma.league_standings.findMany({
       where: { league_key: leagueKey, week: week },
       select: {
@@ -51,7 +52,7 @@ exports.getLeagueStandings = async function (week, leagueKey) {
         points_for: true,
         points_against: true,
         change: true,
-        fantasy_teams: { select: { name: true } },
+        team_key: true,
       },
       orderBy: { rank: 'asc' },
     });
@@ -64,7 +65,7 @@ exports.getLeagueStandings = async function (week, leagueKey) {
         change: data.change,
         points_for: data.points_for,
         points_against: data.points_against,
-        teamName: data.fantasy_teams.name,
+        teamName: fantasyTeams.get(data.team_key),
       };
       leagueStandings.push(formattedStanding);
     });
